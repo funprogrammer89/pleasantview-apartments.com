@@ -1,4 +1,9 @@
 <html>
+
+<script>
+ // 3. Define your variable
+    const vacancy = true; // <--- CHANGE THIS VALUE to true or false
+</script>
 <script>
 
 if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)){
@@ -8,13 +13,7 @@ if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigat
   // false for not mobile device
 
 
-<script>
-// if vacancy = true, banner will show. if vacancy = false, banner will not show.
 
-vacancy = true
-
-
-</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
 
 <head>
@@ -218,6 +217,27 @@ p.e
 
 <hr class="style-two">
 
+<div id="leasing-banner-container" style="display: none;">
+    <center>
+        <img src="nowleasing.jpg">
+        <hr class="style-two">
+    </center>
+</div>
+
+<script>
+
+    if (vacancy === true) {
+        // 4. Get a reference to the container using its ID
+        const container = document.getElementById('leasing-banner-container');
+        
+        // 5. If the container exists, make it visible
+        if (container) {
+            container.style.display = 'block'; // Or 'flex', 'grid', etc., to make it visible
+        }
+    }
+    // If vacancy is false, we do nothing, and the container remains hidden.
+</script>
+
 <nav>
         <div class="nav-container">
 
@@ -236,17 +256,6 @@ p.e
     </nav>
 
 <hr class="style-two">
-
-<script>
-
-if (vacancy==true){
-
-document.currentScript.insertAdjacentHTML(
-  'beforebegin',
-  '<center><img src="nowleasing.jpg"><hr class="style-two"></center>'
-)
-}
-</script>
 
 <font size="7">Owner - <a href='paula.html'>Paula</a> 👩</a> : Manager - <a href="Ken.html">Ken</a> 👨</font>
 
