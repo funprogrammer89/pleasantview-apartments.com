@@ -45,7 +45,7 @@ foreach ($files as $file) {
 		// remove the .txt from the display header
 		//$name = rtrim($file, ".txt");
 		// remove the directory path from the display header
-		echo "</td><td align=left></td></tr><tr><td><br>";
+		//echo "</td><td align=left></td></tr><tr><td><br>";
 		// get date and time of the text document and remove time with substring
 		// echo "<script>x = document.lastModified;
 		//document.write(x.substring(0,x.length-8));</script></td></tr><tr><td><br>";
