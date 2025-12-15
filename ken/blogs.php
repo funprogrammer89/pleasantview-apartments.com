@@ -41,9 +41,9 @@ foreach ($files as $file) {
      // Display the text as HTML and add some ad hoc HTML tags and flair
     echo "</td></tr><tr><td>";
 		//Set the size of your headers from your text file
-	echo "<font size='6' color='$colors[$colorCount]'>";
+	//echo "<font size='6' color='$colors[$colorCount]'>";
 		// remove the .txt from the display header
-		$name = rtrim($file, ".txt");
+		//$name = rtrim($file, ".txt");
 		// remove the directory path from the display header
 		echo "</td><td align=left></td></tr><tr><td><br>";
 		// get date and time of the text document and remove time with substring
