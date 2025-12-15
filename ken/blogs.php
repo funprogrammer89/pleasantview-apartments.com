@@ -39,7 +39,7 @@ foreach ($files as $file) {
     // Open the text file
     $text = file_get_contents($file);
      // Display the text as HTML and add some ad hoc HTML tags and flair
-    echo "</td></tr><tr><td>";
+  //  echo "</td></tr><tr><td>";
 		//Set the size of your headers from your text file
 	//echo "<font size='6' color='$colors[$colorCount]'>";
 		// remove the .txt from the display header
