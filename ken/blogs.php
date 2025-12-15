@@ -39,13 +39,13 @@ foreach ($files as $file) {
     // Open the text file
     $text = file_get_contents($file);
      // Display the text as HTML and add some ad hoc HTML tags and flair
-    echo "</td></tr><tr><td><font size='6'>";
+    echo "</td></tr><tr><td>";
 		//Set the size of your headers from your text file
 	echo "<font size='6' color='$colors[$colorCount]'>";
 		// remove the .txt from the display header
 		$name = rtrim($file, ".txt");
 		// remove the directory path from the display header
-		echo "</font></td><td align=left></td></tr><tr><td><br>";
+		echo "</td><td align=left></td></tr><tr><td><br>";
 		// get date and time of the text document and remove time with substring
 		// echo "<script>x = document.lastModified;
 		//document.write(x.substring(0,x.length-8));</script></td></tr><tr><td><br>";
