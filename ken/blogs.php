@@ -45,7 +45,7 @@ foreach ($files as $file) {
 		// remove the .txt from the display header
 		$name = rtrim($file, ".txt");
 		// remove the directory path from the display header
-		$name = ltrim($name, "/var/www/html/blogs");
+		//$name = ltrim($name, "/var/www/html/blogs");
 		echo $name;
 		echo "</font></td><td align=left></td></tr><tr><td><br>";
 		// get date and time of the text document and remove time with substring
