@@ -2,10 +2,10 @@
 // ------------------------------------
 // 1. Database Connection (Replace with your actual credentials)
 // ------------------------------------
-$host = 'localhost';
-$db = 'your_database_name';
-$user = 'your_mysql_username';
-$pass = 'your_mysql_password';
+$host = 'sql213.infinityfree.com';
+$db = 'epiz_33496197_blogs';
+$user = 'epiz_33496197';
+$pass = 'jJgY7jeQtt';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
 $options = [
