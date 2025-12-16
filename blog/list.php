@@ -28,7 +28,7 @@ if (is_dir($directory)) {
 		
 		$clean_name = pathinfo($link, PATHINFO_FILENAME);
 		
-		if ($clean_name == "s"){
+		if ($clean_name === "s"){
 			continue;
 		}
 		
