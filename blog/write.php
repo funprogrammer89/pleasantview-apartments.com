@@ -52,7 +52,7 @@ if (isset($_POST['submit_post'])) {
     <p style="color: green; font-weight: bold;"><?php echo $message; ?></p>
 <?php endif; ?>
 
-<form method="post" action="admin.php">
+<form method="post" action="write.php">
     <h2>New Blog Post</h2>
     
     <textarea name="blog_content" rows="20" cols="80" required></textarea>
