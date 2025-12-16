@@ -28,6 +28,10 @@ if (is_dir($directory)) {
 		
 		$clean_name = pathinfo($link, PATHINFO_FILENAME);
 		
+		if ($clean_name == "s"){
+			continue;
+		}
+		
 
         echo "<a href='post.php?slug=$clean_name'>$clean_name</a><br><br>";
     }
