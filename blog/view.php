@@ -74,7 +74,7 @@ $colors = [
 </head>
 <body>
 
-    <h1 style="text-align: center; margin-bottom: 40px;">Ken Elliott's Blog</h1>
+    <center><img src="banner.jpg"></center>
 
     <?php foreach ($posts as $index => $post): ?>
         <?php 
