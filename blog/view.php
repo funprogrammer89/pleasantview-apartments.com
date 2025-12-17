@@ -6,14 +6,7 @@ require_once 'Parsedown.php';
 $Parsedown = new Parsedown();
 
 // 1. Pull in the database credentials
-require_once 'db_connect.php'; 
-
-// 2. The connection logic stays here
-try {
-     $pdo = new PDO($dsn, $user, $pass, $options);
-} catch (\PDOException $e) {
-     die("Connection failed: " . $e->getMessage());
-}
+require_once 'db_connect.php';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
 $options = [
@@ -22,6 +15,7 @@ $options = [
     PDO::ATTR_EMULATE_PREPARES   => false,
 ];
 
+// 2. The connection logic stays here
 try {
      $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
@@ -40,7 +34,7 @@ $posts = $stmt->fetchAll();
     <title>Ken Elliott's Blog</title>
     <style>
         body { font-family: sans-serif; max-width: 800px; margin: auto; line-height: 1.6; }
-        .post { 1px solid #eee; padding: 20px 0; }
+        .post { padding: 20px 0; }
         .date { color: #666; font-size: 0.9em; }
         /* Style for the Markdown generated images */
         img { max-width: 100%; height: auto; display: block; margin: 10px 0; }
