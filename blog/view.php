@@ -37,29 +37,38 @@ $colors = [
 <head>
     <title>Ken Elliott's Blog</title>
 <style>
-    /* 1. This styles the empty "void" areas on the sides */
-html {
-    background: linear-gradient(135deg, #243949 0%, #517fa4 100%);
-    min-height: 100vh; /* Ensures the color covers the whole screen */
-}
+    /* 1. The Background Layer */
+    html {
+        /* background-attachment: fixed ensures the gradient doesn't stretch 
+           weirdly as you scroll through many posts */
+        background: linear-gradient(135deg, #243949 0%, #517fa4 100%) fixed;
+        min-height: 100vh;
+    }
 
-    /* 2. This styles the centered blog area */
+    /* 2. The "Floating" Card Layer */
     body { 
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
         max-width: 800px; 
-        margin: 0 auto;        /* Centers the blog */
-        line-height: 1.6; 
-        padding: 40px;         /* Space inside the lines */
-        background-color: #ffffff; /* Keeps the post area white */
         
-        /* The Column Lines you wanted */
+        /* UPDATED: 40px margin at top/bottom creates the "floating" gap */
+        margin: 40px auto; 
+        
+        line-height: 1.6; 
+        padding: 40px; 
+        background-color: #ffffff; 
+        
+        /* UPDATED: Rounded corners make it look like a physical sheet of paper */
+        border-radius: 15px;
+
+        /* The Column Lines */
         border-left: 1px solid #d1d1d1;
         border-right: 1px solid #d1d1d1;
         
-        /* Optional: adds a slight shadow so the blog "lifts" off the background */
-        box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        /* UPDATED: A deeper, softer shadow creates the illusion of height/depth */
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
     }
 
+    /* Keep your existing post styles */
     .post { 
         padding: 25px;
         margin-bottom: 30px;
