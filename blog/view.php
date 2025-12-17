@@ -39,6 +39,12 @@ $posts = $stmt->fetchAll();
         .date { color: #666; font-size: 0.9em; }
         /* Style for the Markdown generated images */
         img { max-width: 100%; height: auto; display: block; margin: 10px 0; }
+		
+		hr.style-two {
+		border: 0;
+		height: 1px;
+		background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+}
     </style>
 </head>
 <body>
@@ -60,6 +66,7 @@ $posts = $stmt->fetchAll();
                     
                     // 3. Output the HTML directly (No htmlspecialchars here, or it will break the tags!)
                     echo $html_content; 
+					echo <hr class="style-two">;
                 ?>
             </div>
         </div>
