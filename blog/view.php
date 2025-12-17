@@ -34,7 +34,7 @@ $posts = $stmt->fetchAll();
 <head>
     <title>Ken Elliott's Blog</title>
     <style>
-        body { font-family: sans-serif; max-width: 800px; margin: auto; line-height: 1.6; }
+        body { font-family: sans-serif; max-width: 800px; margin: auto;}
         .post { border-bottom: 1px solid #eee; padding: 20px 0; }
         .date { color: #666; font-size: 0.9em; }
         /* Style for the Markdown generated images */
