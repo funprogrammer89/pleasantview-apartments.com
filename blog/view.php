@@ -110,7 +110,9 @@ $colors = [
             $bg_color = $colors[$index % count($colors)];
         ?>
 
-        <div class="date">
+        <div class="post" style="background-color: <?php echo $bg_color; ?>;">
+            
+            <div class="date">
     <?php 
         $date = new DateTime($post['post_date']);
 
@@ -123,8 +125,7 @@ $colors = [
         // 'T' will now show "EST" because it is December
         echo $date->format('F j, Y \a\t g:i A T'); 
     ?>
-</div>
-            
+</div>    
             <div class="content">
                 <?php 
                     $raw_markdown = $post['content'];
