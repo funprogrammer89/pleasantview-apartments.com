@@ -41,7 +41,7 @@ $posts = $stmt->fetchAll();
 </head>
 <body>
 
-    <h1>Ken Elliott's (Micro?) Blog</h1>
+    <h1>Ken Elliott's Blog</h1>
 
     <?php foreach ($posts as $post): ?>
         <div class="post">
