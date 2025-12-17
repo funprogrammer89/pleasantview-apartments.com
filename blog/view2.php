@@ -47,7 +47,7 @@ $posts = $stmt->fetchAll();
 
     <?php foreach ($posts as $post): ?>
         <div class="post">
-            <div class="date"><?php echo date('M j, Y', strtotime($post['post_date'])); ?></div>
+            <div class="date"><?php echo date('F j, Y \a\t g:i A', strtotime($post['post_date'])); ?></div>
             
             <div class="content">
                 <?php 
