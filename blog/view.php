@@ -5,10 +5,15 @@ require_once 'Parsedown.php';
 // 2. Initialize the Parser
 $Parsedown = new Parsedown();
 
-$host = 'sql213.infinityfree.com';
-$db = 'epiz_33496197_blogs';
-$user = 'epiz_33496197';
-$pass = 'jJgY7jeQtt';
+// 1. Pull in the database credentials
+require_once 'db_connect.php'; 
+
+// 2. The connection logic stays here
+try {
+     $pdo = new PDO($dsn, $user, $pass, $options);
+} catch (\PDOException $e) {
+     die("Connection failed: " . $e->getMessage());
+}
 
 $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
 $options = [
@@ -20,7 +25,7 @@ $options = [
 try {
      $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
-     die("Connection failed.");
+     die("Connection failed: " . $e->getMessage());
 }
 
 // 3. Fetch the posts

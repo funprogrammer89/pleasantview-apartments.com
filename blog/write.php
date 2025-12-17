@@ -1,11 +1,16 @@
 <?php
-// ------------------------------------
-// 1. Database Connection (Replace with your actual credentials)
-// ------------------------------------
-$host = 'sql213.infinityfree.com';
-$db = 'epiz_33496197_blogs';
-$user = 'epiz_33496197';
-$pass = 'jJgY7jeQtt';
+
+// admin.php or view.php
+
+// 1. Pull in the database credentials
+require_once 'db_connect.php'; 
+
+// 2. The connection logic stays here
+try {
+     $pdo = new PDO($dsn, $user, $pass, $options);
+} catch (\PDOException $e) {
+     die("Connection failed: " . $e->getMessage());
+}
 
 $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
 $options = [
