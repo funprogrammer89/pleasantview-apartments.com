@@ -112,7 +112,18 @@ $colors = [
 
         <div class="post" style="background-color: <?php echo $bg_color; ?>;">
             
-            <div class="date"><?php echo date('F j, Y \a\t g:i A', strtotime($post['post_date'])); ?></div>
+            <div class="date">
+    <?php 
+        // 1. Create a DateTime object from the database string
+        $date = new DateTime($post['post_date'], new DateTimeZone('UTC')); 
+        
+        // 2. Convert it to your local timezone
+        $date->setTimezone(new DateTimeZone('America/New_York')); 
+        
+        // 3. Echo the formatted version
+        echo $date->format('F j, Y \a\t g:i A'); 
+    ?>
+</div>
             
             <div class="content">
                 <?php 
