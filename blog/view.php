@@ -74,7 +74,7 @@ $colors = [
 </head>
 <body>
 
-    <center><img src="banner.jpg"></center>
+    <center><img src="banner.gif"></center>
 
     <?php foreach ($posts as $index => $post): ?>
         <?php 
