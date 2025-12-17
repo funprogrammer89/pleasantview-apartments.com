@@ -110,16 +110,17 @@ $colors = [
             $bg_color = $colors[$index % count($colors)];
         ?>
 
-        <div class="post" style="background-color: <?php echo $bg_color; ?>;">
-            
-            <div class="date">
+        <div class="date">
     <?php 
         $date = new DateTime($post['post_date']);
 
         // Keeping your 3-hour correction
         $date->modify('+3 hours'); 
 
-        // The 'T' at the end adds the timezone abbreviation (EDT/EST)
+        // Set the timezone to New York so PHP knows if it's currently EST or EDT
+        $date->setTimezone(new DateTimeZone('America/New_York'));
+
+        // 'T' will now show "EST" because it is December
         echo $date->format('F j, Y \a\t g:i A T'); 
     ?>
 </div>
