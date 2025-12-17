@@ -39,7 +39,7 @@ $colors = [
 <style>
     /* 1. This styles the empty "void" areas on the sides */
 html {
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background: linear-gradient(135deg, #243949 0%, #517fa4 100%);
     min-height: 100vh; /* Ensures the color covers the whole screen */
 }
 
