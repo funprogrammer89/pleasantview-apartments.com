@@ -44,21 +44,25 @@ $colors = [
     }
 
     /* 2. This styles the centered blog area */
-    body { 
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-        max-width: 800px; 
-        margin: 0 auto;        /* Centers the blog */
-        line-height: 1.6; 
-        padding: 40px;         /* Space inside the lines */
-        background-color: #ffffff; /* Keeps the post area white */
-        
-        /* The Column Lines you wanted */
-        border-left: 1px solid #d1d1d1;
-        border-right: 1px solid #d1d1d1;
-        
-        /* Optional: adds a slight shadow so the blog "lifts" off the background */
-        box-shadow: 0 0 15px rgba(0,0,0,0.05);
-    }
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    max-width: 800px; 
+    
+    /* 1. Add vertical margin (60px) to make it "float" from the top/bottom */
+    margin: 60px auto; 
+    
+    line-height: 1.6; 
+    padding: 40px; 
+    background-color: #ffffff; 
+    
+    /* 2. The Column Lines */
+    border-left: 1px solid #d1d1d1;
+    border-right: 1px solid #d1d1d1;
+    
+    /* 3. Enhanced shadow for a realistic floating effect */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    
+    /* 4. Rounded corners make it look like a modern card */
+    border-radius: 15px;
 
     .post { 
         padding: 25px;
