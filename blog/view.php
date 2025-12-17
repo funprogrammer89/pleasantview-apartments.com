@@ -114,13 +114,13 @@ $colors = [
             
             <div class="date">
     <?php 
-        // 1. Create a DateTime object from the database string
-        $date = new DateTime($post['post_date'], new DateTimeZone('UTC')); 
-        
-        // 2. Convert it to your local timezone
-        $date->setTimezone(new DateTimeZone('America/New_York')); 
-        
-        // 3. Echo the formatted version
+        // 1. Get the raw string from the database (e.g., "2023-10-27 14:30:00")
+        $raw_date = $post['post_date'];
+
+        // 2. Create the date object and FORCE it to be New York time immediately
+        $date = new DateTime($raw_date, new DateTimeZone('America/New_York'));
+
+        // 3. Display it
         echo $date->format('F j, Y \a\t g:i A'); 
     ?>
 </div>
