@@ -3,13 +3,6 @@
 // 1. Pull in the database credentials
 require_once 'db.php'; 
 
-// 2. The connection logic stays here
-try {
-     $pdo = new PDO($dsn, $user, $pass, $options);
-} catch (\PDOException $e) {
-     die("Connection failed: " . $e->getMessage());
-}
-
 $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
