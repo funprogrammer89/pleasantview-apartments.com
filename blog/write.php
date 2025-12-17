@@ -1,5 +1,5 @@
 <?php
-
+ 
 // 1. Pull in the database credentials
 require_once 'db.php'; 
 

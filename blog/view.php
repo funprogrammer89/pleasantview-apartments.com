@@ -7,7 +7,7 @@ $Parsedown = new Parsedown();
 
 // 1. Pull in the database credentials
 require_once 'db.php';
-
+ 
 $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
