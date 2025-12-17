@@ -32,7 +32,7 @@ $posts = $stmt->fetchAll();
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Markdown Blog</title>
+    <title>Ken Elliott's Blog</title>
     <style>
         body { font-family: sans-serif; max-width: 800px; margin: auto; line-height: 1.6; }
         .post { border-bottom: 1px solid #eee; padding: 20px 0; }
@@ -43,7 +43,7 @@ $posts = $stmt->fetchAll();
 </head>
 <body>
 
-    <h1>Latest Updates</h1>
+    <h1>Ken Elliott's (Micro?) Blog</h1>
 
     <?php foreach ($posts as $post): ?>
         <div class="post">
