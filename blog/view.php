@@ -38,31 +38,27 @@ $colors = [
     <title>Ken Elliott's Blog</title>
 <style>
     /* 1. This styles the empty "void" areas on the sides */
-    html {
-        background-color: #f0f2f5; /* A cool, modern light gray/blue */
-        /* You could also try: #2c3e50 (Dark), #fdf6e3 (Cream), or #e8f5e9 (Mint) */
-    }
+html {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh; /* Ensures the color covers the whole screen */
+}
 
     /* 2. This styles the centered blog area */
-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    max-width: 800px; 
-    
-    /* 1. Add vertical margin (60px) to make it "float" from the top/bottom */
-    margin: 60px auto; 
-    
-    line-height: 1.6; 
-    padding: 40px; 
-    background-color: #ffffff; 
-    
-    /* 2. The Column Lines */
-    border-left: 1px solid #d1d1d1;
-    border-right: 1px solid #d1d1d1;
-    
-    /* 3. Enhanced shadow for a realistic floating effect */
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    
-    /* 4. Rounded corners make it look like a modern card */
-    border-radius: 15px;
+    body { 
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        max-width: 800px; 
+        margin: 0 auto;        /* Centers the blog */
+        line-height: 1.6; 
+        padding: 40px;         /* Space inside the lines */
+        background-color: #ffffff; /* Keeps the post area white */
+        
+        /* The Column Lines you wanted */
+        border-left: 1px solid #d1d1d1;
+        border-right: 1px solid #d1d1d1;
+        
+        /* Optional: adds a slight shadow so the blog "lifts" off the background */
+        box-shadow: 0 0 15px rgba(0,0,0,0.05);
+    }
 
     .post { 
         padding: 25px;
