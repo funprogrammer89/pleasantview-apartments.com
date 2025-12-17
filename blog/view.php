@@ -66,7 +66,7 @@ $posts = $stmt->fetchAll();
                     
                     // 3. Output the HTML directly (No htmlspecialchars here, or it will break the tags!)
                     echo $html_content; 
-					echo <hr class="style-two">;
+					echo '<hr class="style-two">';
                 ?>
             </div>
         </div>
