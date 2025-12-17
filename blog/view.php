@@ -37,12 +37,18 @@ $colors = [
 <head>
     <title>Ken Elliott's Blog</title>
     <style>
-        body { 
-            font-family: sans-serif; 
-            max-width: 800px; 
-            margin: auto; 
-            line-height: 1.6; 
-            padding: 20px; /* Added body padding for mobile edges */
+        body {
+    font-family: sans-serif; 
+    max-width: 800px; 
+    margin: 20px auto; /* Added top/bottom margin */
+    line-height: 1.6; 
+    padding: 40px;
+    background-color: #ffffff;
+    
+    /* Elegant Shadow instead of lines */
+    box-shadow: 0 0 20px rgba(0,0,0,0.05); 
+    border-radius: 8px;
+}
         }
         
         /* UPDATED .post STYLE */
@@ -70,6 +76,8 @@ $colors = [
             background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
             margin-top: 20px;
         }
+		
+		
     </style>
 </head>
 <body>
