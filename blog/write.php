@@ -1,9 +1,7 @@
 <?php
 
-// admin.php or view.php
-
 // 1. Pull in the database credentials
-require_once 'db_connect.php'; 
+require_once 'db.php'; 
 
 // 2. The connection logic stays here
 try {

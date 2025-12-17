@@ -6,7 +6,7 @@ require_once 'Parsedown.php';
 $Parsedown = new Parsedown();
 
 // 1. Pull in the database credentials
-require_once 'db_connect.php';
+require_once 'db.php';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
 $options = [
