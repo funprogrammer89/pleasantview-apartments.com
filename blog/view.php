@@ -114,13 +114,14 @@ $colors = [
             
             <div class="date">
     <?php 
-        // 1. Get the raw string from the database (e.g., "2023-10-27 14:30:00")
-        $raw_date = $post['post_date'];
+        // 1. Create the date object from your database string
+        $date = new DateTime($post['post_date']);
 
-        // 2. Create the date object and FORCE it to be New York time immediately
-        $date = new DateTime($raw_date, new DateTimeZone('America/New_York'));
+        // 2. Adjust for the 3-hour difference 
+        // Change '+3 hours' to '-3 hours' if it is currently 3 hours ahead
+        $date->modify('+3 hours'); 
 
-        // 3. Display it
+        // 3. Display it in the format you like
         echo $date->format('F j, Y \a\t g:i A'); 
     ?>
 </div>
