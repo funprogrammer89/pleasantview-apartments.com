@@ -1,7 +1,7 @@
 <?php
  
 // 1. Pull in the database credentials
-require_once 'db.php'; 
+require_once 'blog/db.php'; 
 try {
      $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
