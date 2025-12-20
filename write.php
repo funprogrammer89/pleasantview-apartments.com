@@ -1,5 +1,4 @@
 <?php
- 
 // 1. Pull in the database credentials
 require_once 'blog/db.php'; 
 try {
@@ -8,42 +7,29 @@ try {
      die("Connection failed: " . $e->getMessage());
 }
 
-// ------------------------------------
-// 2. Set your passcode here
-// ------------------------------------
-// IMPORTANT: Change this to your own secure passcode
 define('ADMIN_PASSCODE', '7747');
 
-// ------------------------------------
-// 3. Handle Form Submission
-// ------------------------------------
+// Create a variable to hold the content so it doesn't disappear
+$draft_content = ""; 
+
 if (isset($_POST['submit_post'])) {
-    
-    // Check if passcode matches
+    // Store what you typed so we can show it again if there's an error
+    $draft_content = $_POST['blog_content'] ?? '';
+
     if (isset($_POST['passcode']) && $_POST['passcode'] === ADMIN_PASSCODE) {
-        
-        // Basic check to ensure content is not empty
-        if (!empty($_POST['blog_content'])) {
-            
-            // 4. Security (IMPORTANT): Clean the input
-            $content = $_POST['blog_content'];
-            
-            // 5. Prepare the SQL Statement (Prevents SQL Injection)
+        if (!empty($draft_content)) {
             $sql = "INSERT INTO posts (content) VALUES (?)";
             $stmt = $pdo->prepare($sql);
-            
-            // 6. Execute the statement
             try {
-                $stmt->execute([$content]);
+                $stmt->execute([$draft_content]);
                 $message = "Post successfully published!";
+                $draft_content = ""; // Clear the box ONLY if it was successful
             } catch (\PDOException $e) {
                 $message = "Error publishing post: " . $e->getMessage();
             }
-            
         } else {
             $message = "Error: Post content cannot be empty.";
         }
-        
     } else {
         $message = "Error: Invalid passcode. Access denied.";
     }
@@ -71,7 +57,7 @@ if (isset($_POST['submit_post'])) {
     <br><br>
     
     <label for="blog_content">Post Content:</label><br>
-    <textarea id="blog_content" name="blog_content" rows="20" cols="80" required></textarea>
+    <textarea id="blog_content" name="blog_content" rows="20" cols="80" required><?php echo htmlspecialchars($draft_content); ?></textarea>
     <br><br>
     
     <input type="submit" name="submit_post" value="Publish Post">
