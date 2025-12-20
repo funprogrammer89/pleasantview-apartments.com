@@ -49,7 +49,7 @@ if (isset($_POST['submit_post'])) {
     </p>
 <?php endif; ?>
 
-<form method="post" action="write.php">
+<form method="post" action="write2.php">
     <h2>New Blog Post</h2>
     
     <label for="passcode">Enter Passcode:</label><br>
