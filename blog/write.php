@@ -23,7 +23,7 @@ try {
 if (!file_exists('p.txt')) {
     die("Error: passcode file is missing.");
 }
-$stored_hash = trim(file_get_contents('passcode.txt'));
+$stored_hash = trim(file_get_contents('p.txt'));
 
 $draft_content = ""; 
 $current_id = ""; 
