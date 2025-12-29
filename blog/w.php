@@ -50,3 +50,50 @@ if (isset($_POST['submit_post'])) {
     }
 }
 ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Blog Posts</title>
+</head>
+<body>
+
+<?php if (isset($message)) : ?>
+    <p style="color: <?php echo (strpos($message, 'successfully') !== false) ? 'green' : 'red'; ?>; font-weight: bold;">
+        <?php echo htmlspecialchars($message); ?>
+    </p>
+<?php endif; ?>
+
+<fieldset style="margin-bottom: 20px; padding: 15px;">
+    <legend>Load Recent Entry</legend>
+    <form method="post" action="write.php">
+        <label for="post_to_load">Select a recent post:</label>
+        <select name="post_to_load" id="post_to_load">
+            <?php foreach ($recent_posts as $post): ?>
+                <option value="<?php echo $post['id']; ?>">
+                    ID #<?php echo $post['id']; ?>: <?php echo htmlspecialchars(substr($post['content'], 0, 50)); ?>...
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <input type="submit" name="load_post" value="Load into Editor">
+    </form>
+</fieldset>
+
+<hr>
+
+<form method="post" action="write.php">
+    <h2>Editor</h2>
+    
+    <label for="passcode">Enter Passcode:</label><br>
+    <input type="password" id="passcode" name="passcode" required>
+    <br><br>
+    
+    <label for="blog_content">Post Content:</label><br>
+    <textarea id="blog_content" name="blog_content" rows="20" cols="80" required><?php echo htmlspecialchars($draft_content); ?></textarea>
+    <br><br>
+    
+    <input type="submit" name="submit_post" value="Publish Post">
+</form>
+
+</body>
+</html>
