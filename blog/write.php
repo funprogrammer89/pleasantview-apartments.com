@@ -172,7 +172,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
                 <span id="copy-status" style="margin-left:10px; font-size: 0.9em; color: green; display: none;">Copied!</span>
                 
                 <p style="font-size: 0.8em; color: #666; margin-top: 5px;">
-                    Copies text + prompt. Then paste into Gemini.
+                    Copies text and includes a prompt. Then paste into Gemini.
                 </p>
 
                 <input type="hidden" name="post_id" value="<?php echo htmlspecialchars($current_id); ?>">
