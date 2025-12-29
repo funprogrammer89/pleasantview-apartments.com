@@ -156,7 +156,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
     <?php endif; ?>
 	
 	
-	<script>
+<script>
 document.getElementById('ai-btn').addEventListener('click', function() {
     const contentArea = document.querySelector('textarea[name="blog_content"]');
     const loadingText = document.getElementById('ai-loading');
@@ -176,15 +176,20 @@ document.getElementById('ai-btn').addEventListener('click', function() {
     })
     .then(response => response.json())
     .then(data => {
+        // Log the data to the browser console for debugging
+        console.log("AI Response:", data);
+
         if (data.candidates && data.candidates[0].content.parts[0].text) {
             contentArea.value = data.candidates[0].content.parts[0].text.trim();
+        } else if (data.error) {
+            alert("AI Error: " + data.error);
         } else {
-            alert("AI Error: " + (data.error || "Unknown response"));
+            alert("Unexpected response format from AI.");
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert("Could not connect to AI proxy.");
+        alert("Connection Error: Check if ai_proxy.php exists in the same folder.");
     })
     .finally(() => {
         loadingText.style.display = 'none';
