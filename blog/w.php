@@ -81,7 +81,7 @@ if (isset($_POST['submit_post'])) {
 
 <hr>
 
-<form method="post" action="write.php">
+<form method="post" action="w.php">
     <h2>Editor</h2>
     
     <label for="passcode">Enter Passcode:</label><br>
