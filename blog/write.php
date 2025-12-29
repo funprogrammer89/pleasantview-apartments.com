@@ -147,6 +147,9 @@ if ($is_admin && isset($_POST['submit_post'])) {
                 
                 <br><br>
                 <input type="submit" name="submit_post" class="btn-save" value="Publish Changes">
+				<br><br>
+				Markdown Cheatsheet<br><br>
+				![image text](URL)
                 <?php if ($current_id): ?> 
                     | <a href="write.php">Cancel Edit</a> 
                 <?php endif; ?>
