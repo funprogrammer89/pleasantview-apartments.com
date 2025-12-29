@@ -153,7 +153,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
                 <span id="autosave-status"></span>
                 <h3><?php echo $current_id ? "Editing Post #" . htmlspecialchars($current_id) : "Create New Post"; ?></h3>
                 
-                <button type="button" class="btn-ai" id="ai-copy-btn">✨ Copy for AI</button>
+                <button type="button" class="btn-ai" id="ai-copy-btn">✨ Copy for AI</button><br><br>
                 <span id="copy-status" style="margin-left:10px; font-size: 0.9em; color: green; display: none;">Copied!</span>
 
                 <input type="hidden" name="post_id" id="post_id" value="<?php echo htmlspecialchars($current_id); ?>">
