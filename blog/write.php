@@ -20,8 +20,8 @@ try {
 }
 
 // 3. Passcode Logic (Using Hashing)
-if (!file_exists('passcode.txt')) {
-    die("Error: passcode.txt is missing.");
+if (!file_exists('p.txt')) {
+    die("Error: passcode file is missing.");
 }
 $stored_hash = trim(file_get_contents('passcode.txt'));
 
@@ -97,4 +97,113 @@ if ($is_admin && isset($_POST['submit_post'])) {
         }
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
-        header("Location:
+        header("Location: write.php?msg=Saved+Successfully");
+        exit;
+    } else {
+        $message = "Post content cannot be empty.";
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blog Editor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 10px; color: #333; }
+        fieldset { background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; }
+        textarea, input, select { 
+            font-size: 16px; 
+            width: 100%; 
+            padding: 10px; 
+            margin-bottom: 10px;
+            border: 1px solid #ccc; 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+        }
+        .btn-ai { background: #28a745; color: white; border: none; cursor: pointer; font-weight: bold; width: auto; padding: 10px 15px; }
+        .btn-save { background: #007bff; color: white; border: none; cursor: pointer; width: auto; padding: 10px 15px; }
+        .preview-box { max-width: 400px; }
+        .msg-banner { color: #004085; background-color: #cce5ff; border: 1px solid #b8daff; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <?php if ($message || isset($_GET['msg'])): ?>
+        <div class="msg-banner">
+            <?php echo htmlspecialchars($_GET['msg'] ?? $message); ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!$is_admin): ?>
+        <div style="text-align: center; margin-top: 50px;">
+            <h2>Admin Login</h2>
+            <form method="post">
+                <input type="password" name="login_passcode" placeholder="Enter Passcode" required style="max-width:300px;">
+                <br>
+                <input type="submit" value="Login" style="width: auto; padding: 10px 25px;">
+            </form>
+        </div>
+    <?php else: ?>
+        <p align="right"><a href="write.php?logout=1">Logout</a></p>
+
+        <form method="post">
+            <fieldset>
+                <legend><b>Post Management</b></legend>
+                <select name="post_to_load" class="preview-box">
+                    <option value="">-- Select a post --</option>
+                    <?php foreach ($recent_posts as $post): ?>
+                        <option value="<?php echo htmlspecialchars($post['id']); ?>">
+                            ID #<?php echo htmlspecialchars($post['id']); ?>: 
+                            <?php echo htmlspecialchars(substr(strip_tags($post['content'] ?? ''), 0, 50)) . '...'; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <br>
+                <input type="submit" name="load_post" value="Load" style="width:auto;">
+                <input type="submit" name="delete_post" value="Delete" onclick="return confirm('Permanently delete?');" style="color:red; width:auto;">
+                
+                <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+
+                <h3><?php echo $current_id ? "Editing Post #" . htmlspecialchars($current_id) : "Create New Post"; ?></h3>
+                
+                <button type="button" class="btn-ai" id="ai-copy-btn">✨ Copy for AI Improvement</button>
+                <span id="copy-status" style="margin-left:10px; font-size: 0.9em; color: green; display: none;">Copied!</span>
+                
+                <p style="font-size: 0.8em; color: #666; margin-top: 5px;">
+                    Copies text + prompt. Then paste into Gemini.
+                </p>
+
+                <input type="hidden" name="post_id" value="<?php echo htmlspecialchars($current_id); ?>">
+                <textarea name="blog_content" id="blog_content" rows="15"><?php echo htmlspecialchars($draft_content); ?></textarea>
+                
+                <input type="submit" name="submit_post" class="btn-save" value="Publish Changes">
+                <?php if ($current_id): ?> 
+                    | <a href="write.php">Cancel Edit</a> 
+                <?php endif; ?>
+            </fieldset>
+        </form>
+    <?php endif; ?>
+
+    <script>
+    document.getElementById('ai-copy-btn')?.addEventListener('click', function() {
+        const content = document.getElementById('blog_content').value.trim();
+        const status = document.getElementById('copy-status');
+        if (!content) { alert("Please write something first!"); return; }
+
+        const fullPrompt = "Please rewrite the following blog post to improve the flow, grammar, and professional tone. Keep the original meaning intact:\n\n" + content;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(fullPrompt).then(() => {
+                status.style.display = 'inline';
+                setTimeout(() => { status.style.display = 'none'; }, 2000);
+                window.open('https://gemini.google.com/', '_blank');
+            });
+        } else {
+            alert("Clipboard access failed. Please copy manually.");
+        }
+    });
+    </script>
+</body>
+</html>
