@@ -139,7 +139,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
         <form method="post" id="editor-form">
             <fieldset>
                 <legend><b>Post Management</b></legend>
-                <select name="post_to_load" onchange="this.form.submit()" style="max-width: 400px;">
+                <select name="post_to_load" id="post_selector" onchange="this.form.submit()" style="max-width: 400px;">
                     <option value="">-- Select to Load a Post --</option>
                     <?php foreach ($recent_posts as $post): ?>
                         <option value="<?php echo $post['id']; ?>" <?php echo ($current_id == $post['id']) ? 'selected' : ''; ?>>
@@ -153,7 +153,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
                 <span id="autosave-status"></span>
                 <h3><?php echo $current_id ? "Editing Post #" . htmlspecialchars($current_id) : "Create New Post"; ?></h3>
                 
-                <button type="button" class="btn-ai" id="ai-copy-btn">✨ Copy for AI</button><br><br>
+                <button type="button" class="btn-ai" id="ai-copy-btn">✨ Copy for AI</button>
                 <span id="copy-status" style="margin-left:10px; font-size: 0.9em; color: green; display: none;">Copied!</span>
 
                 <input type="hidden" name="post_id" id="post_id" value="<?php echo htmlspecialchars($current_id); ?>">
@@ -180,11 +180,13 @@ if ($is_admin && isset($_POST['submit_post'])) {
     <script>
     const textarea = document.getElementById('blog_content');
     const status = document.getElementById('autosave-status');
-    const postId = document.getElementById('post_id')?.value || 'new';
+    const postIdInput = document.getElementById('post_id');
+    const postSelector = document.getElementById('post_selector');
 
     // 1. Load Auto-Saved Draft
     window.addEventListener('load', () => {
-        const savedData = localStorage.getItem('draft_' + postId);
+        const currentId = postIdInput?.value || 'new';
+        const savedData = localStorage.getItem('draft_' + currentId);
         if (savedData && !textarea.value) {
             textarea.value = savedData;
             status.innerText = 'Restored draft from local storage';
@@ -193,22 +195,31 @@ if ($is_admin && isset($_POST['submit_post'])) {
 
     // 2. Auto-Save Logic
     textarea?.addEventListener('input', () => {
-        localStorage.setItem('draft_' + postId, textarea.value);
+        const currentId = postIdInput?.value || 'new';
+        localStorage.setItem('draft_' + currentId, textarea.value);
         status.innerText = 'Draft saved locally...';
         setTimeout(() => { status.innerText = ''; }, 2000);
     });
 
-    // 3. Clear Auto-Save on Publish/Cancel
+    // 3. Clear Auto-Save helper
     function clearAutoSave() {
-        localStorage.removeItem('draft_' + postId);
+        const currentId = postIdInput?.value || 'new';
+        localStorage.removeItem('draft_' + currentId);
     }
 
-    // NEW: Clear Editor with Confirmation
+    // UPDATED: Clear Editor, Local Storage, and Reset Select Menu
     function confirmClear() {
-        if (confirm("Are you sure you want to clear the editor? This will also delete your local auto-save draft.")) {
+        if (confirm("Clear editor? This will also delete your local auto-save draft and reset the selection.")) {
             textarea.value = "";
             clearAutoSave();
-            status.innerText = 'Editor and local draft cleared.';
+            
+            // Reset the Dropdown to the first option (index 0)
+            if (postSelector) postSelector.selectedIndex = 0;
+            
+            // Optional: Reset the hidden Post ID if you want to switch to "New Post" mode immediately
+            if (postIdInput) postIdInput.value = "";
+            
+            status.innerText = 'Editor cleared and selection reset.';
             setTimeout(() => { status.innerText = ''; }, 3000);
         }
     }
