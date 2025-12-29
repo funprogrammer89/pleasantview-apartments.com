@@ -1,6 +1,10 @@
 <?php
-require_once 'db.php'; 
+// 1. Error Reporting (Turn this off once the site is live)
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
+// 2. Database Connection
+require_once 'db.php'; 
 try {
      $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
@@ -10,36 +14,29 @@ try {
 define('ADMIN_PASSCODE', '7747');
 $draft_content = ""; 
 $current_id = ""; 
+$message = "";
 
-// --- 1. PRE-FETCH: Get recent posts for the dropdown list ---
+// 3. FETCH RECENT POSTS (For the dropdown menu)
 $stmt_list = $pdo->query("SELECT id, content FROM posts ORDER BY id DESC LIMIT 10");
 $recent_posts = $stmt_list->fetchAll();
 
-// --- 2. ACTION: DELETE A POST ---
+// 4. ACTION: DELETE (Requires Passcode)
 if (isset($_POST['delete_post'])) {
-    // Check passcode before deleting
     if (isset($_POST['passcode']) && $_POST['passcode'] === ADMIN_PASSCODE) {
         $id_to_delete = $_POST['post_to_load'] ?? null;
         if ($id_to_delete) {
             $stmt_del = $pdo->prepare("DELETE FROM posts WHERE id = ?");
-            try {
-                $stmt_del->execute([$id_to_delete]);
-                $message = "Post ID #$id_to_delete deleted successfully.";
-                // Refresh to clear the dropdown
-                header("Location: write.php?msg=deleted"); 
-                exit;
-            } catch (\PDOException $e) {
-                $message = "Error deleting post: " . $e->getMessage();
-            }
+            $stmt_del->execute([$id_to_delete]);
+            // Redirect to prevent form resubmission
+            header("Location: write.php?msg=Deleted+Successfully"); 
+            exit;
         }
     } else {
-        $message = "Error: Invalid passcode. Delete denied.";
+        $message = "Error: Invalid passcode for deletion.";
     }
 }
 
-// --- 3. ACTION: LOAD POST INTO EDITOR ---
-// Note: Passcode is usually not required just to VIEW/LOAD, 
-// but it is required to SAVE the changes later.
+// 5. ACTION: LOAD FOR EDIT (No passcode needed to just view)
 if (isset($_POST['load_post'])) {
     $selected_id = $_POST['post_to_load'] ?? null;
     if ($selected_id) {
@@ -53,74 +50,82 @@ if (isset($_POST['load_post'])) {
     }
 }
 
-// --- 4. ACTION: SAVE (INSERT OR UPDATE) ---
+// 6. ACTION: SAVE/UPDATE (Requires Passcode)
 if (isset($_POST['submit_post'])) {
     $draft_content = $_POST['blog_content'] ?? '';
     $post_id = $_POST['post_id'] ?? ''; 
 
-    // Check passcode before modifying the database
     if (isset($_POST['passcode']) && $_POST['passcode'] === ADMIN_PASSCODE) {
         if (!empty($draft_content)) {
             if (!empty($post_id)) {
-                // UPDATE if an ID exists
-                $sql = "UPDATE posts SET content
-				
-				
+                // Logic: If ID exists, UPDATE
+                $sql = "UPDATE posts SET content = ? WHERE id = ?";
+                $params = [$draft_content, $post_id];
+            } else {
+                // Logic: If ID is empty, INSERT
+                $sql = "INSERT INTO posts (content) VALUES (?)";
+                $params = [$draft_content];
+            }
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute($params);
+            $message = "Success: Post saved.";
+            $draft_content = ""; 
+            $current_id = "";
+        } else {
+            $message = "Error: Content is empty.";
+        }
+    } else {
+        $message = "Error: Invalid passcode.";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Blog Admin</title>
+    <title>Blog Management</title>
 </head>
 <body>
 
-<?php if (isset($message) || isset($_GET['msg'])) : ?>
-    <p style="color: blue; font-weight: bold;">
-        <?php echo htmlspecialchars($_GET['msg'] ?? $message); ?>
-    </p>
+<?php 
+$display_msg = $_GET['msg'] ?? $message;
+if ($display_msg): 
+?>
+    <p style="color: blue;"><b><?php echo htmlspecialchars($display_msg); ?></b></p>
 <?php endif; ?>
 
-<fieldset style="margin-bottom: 20px; padding: 15px; border: 2px solid #ccc;">
-    <legend>Modify or Delete Entries</legend>
-    <form method="post" action="write.php">
-        <label>Select Post:</label>
-        <select name="post_to_load" required>
-            <option value="">-- Choose --</option>
+<fieldset style="padding: 15px; margin-bottom: 20px;">
+    <legend>Manage Existing Posts</legend>
+    <form method="post">
+        <select name="post_to_load">
+            <option value="">-- Select Post --</option>
             <?php foreach ($recent_posts as $post): ?>
                 <option value="<?php echo $post['id']; ?>">
-                    ID #<?php echo $post['id']; ?>: <?php echo htmlspecialchars(substr($post['content'], 0, 30)); ?>...
+                    ID #<?php echo $post['id']; ?>: <?php echo htmlspecialchars(substr($post['content'], 0, 30)); ?>
                 </option>
             <?php endforeach; ?>
         </select>
-        
-        <input type="submit" name="load_post" value="Load for Editing">
-        
-        <hr>
-        
+        <input type="submit" name="load_post" value="Load into Editor">
+        <br><br>
         <label>Passcode to Delete:</label>
-        <input type="password" name="passcode" style="width: 60px;">
-        <input type="submit" name="delete_post" value="Permanently Remove" 
-               style="background-color: #ffcccc;"
-               onclick="return confirm('Really delete this?');">
+        <input type="password" name="passcode" style="width:80px;">
+        <input type="submit" name="delete_post" value="Delete Selected" onclick="return confirm('Confirm Delete?');">
     </form>
 </fieldset>
 
-<form method="post" action="write.php">
-    <h2><?php echo $current_id ? "Modifying Post #$current_id" : "New Post"; ?></h2>
-    
+<form method="post">
+    <h2><?php echo $current_id ? "Edit Post #$current_id" : "New Post"; ?></h2>
     <input type="hidden" name="post_id" value="<?php echo htmlspecialchars($current_id); ?>">
-
+    
     <label>Admin Passcode:</label><br>
-    <input type="password" name="passcode" required>
-    <br><br>
+    <input type="password" name="passcode" required><br><br>
     
     <label>Content:</label><br>
-    <textarea name="blog_content" rows="15" cols="80" required><?php echo htmlspecialchars($draft_content); ?></textarea>
-    <br><br>
+    <textarea name="blog_content" rows="15" cols="70"><?php echo htmlspecialchars($draft_content); ?></textarea><br><br>
     
-    <input type="submit" name="submit_post" value="Save Changes">
-    
+    <input type="submit" name="submit_post" value="Publish/Update">
     <?php if ($current_id): ?>
-        <a href="write.php">Cancel & Start New</a>
+        <a href="write.php">Cancel Edit</a>
     <?php endif; ?>
 </form>
 
