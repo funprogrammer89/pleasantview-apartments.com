@@ -14,7 +14,9 @@ try {
      die("Connection failed: " . $e->getMessage());
 }
 
-define('ADMIN_PASSCODE', '7747');
+// Replace your old define line with this:
+$stored_passcode = trim(file_get_contents('passcode.txt'));
+define('ADMIN_PASSCODE', $stored_passcode);
 $draft_content = ""; 
 $current_id = ""; 
 $message = "";
