@@ -150,8 +150,9 @@ if ($is_admin && isset($_POST['submit_post'])) {
 				<?php if ($current_id): ?> 
                     | <a href="write.php">Cancel Edit</a> 
                 <?php endif; ?>
+				<br>
 				<hr style="margin: 20px 0;">
-				<br><br>
+				<br>
 				Markdown Cheatsheet<br><br>
 				![image text](URL)
             </fieldset>
