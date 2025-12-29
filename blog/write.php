@@ -182,6 +182,10 @@ if ($is_admin && isset($_POST['submit_post'])) {
                 <?php if ($current_id): ?> 
                     | <a href="write.php">Cancel Edit</a> 
                 <?php endif; ?>
+				<hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+				Markdown Cheat sheet
+				<br><br>
+				![img text](URL)
             </fieldset>
         </form>
     <?php endif; ?>
