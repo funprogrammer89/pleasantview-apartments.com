@@ -114,10 +114,9 @@ if ($is_admin && isset($_POST['submit_post'])) {
         .btn-ai { background: #28a745; color: white; border: none; cursor: pointer; font-weight: bold; width: auto; padding: 10px 15px; border-radius: 4px; }
         .btn-save { background: #007bff; color: white; border: none; cursor: pointer; width: auto; padding: 10px 15px; border-radius: 4px; }
         .btn-del { background: #dc3545; color: white; border: none; cursor: pointer; width: auto; padding: 10px 15px; border-radius: 4px; margin-left: 10px; }
-        .btn-clear { background: #6c757d; color: white; border: none; cursor: pointer; width: auto; padding: 10px 15px; border-radius: 4px; margin-left: 10px; }
+        .btn-clear { background: #6c757d; color: white; border: none; cursor: pointer; width: auto; padding: 10px 15px; border-radius: 4px; }
         .msg-banner { color: #004085; background-color: #cce5ff; border: 1px solid #b8daff; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
         #autosave-status { font-size: 0.8em; color: #888; float: right; }
-        /* Helper to hide things via JS */
         .hidden { display: none !important; }
     </style>
 </head>
@@ -164,7 +163,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
                 <div style="margin-top: 10px;">
                     <input type="submit" name="submit_post" class="btn-save" value="Publish Changes" onclick="clearAutoSave()">
                     
-                    <button type="button" class="btn-clear" onclick="confirmClear()">Clear Editor</button>
+                    <button type="button" id="clear-btn" class="btn-clear <?php echo $current_id ? 'hidden' : ''; ?>" onclick="confirmClear()">Clear Editor</button>
 
                     <span id="admin-actions" class="<?php echo $current_id ? '' : 'hidden'; ?>">
                         <input type="submit" name="delete_post" value="Delete Post" class="btn-del" onclick="return confirm('Permanently delete this post?');">
@@ -186,6 +185,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
     const postSelector = document.getElementById('post_selector');
     const editorTitle = document.getElementById('editor-title');
     const adminActions = document.getElementById('admin-actions');
+    const clearBtn = document.getElementById('clear-btn');
 
     // 1. Load Auto-Saved Draft
     window.addEventListener('load', () => {
@@ -211,26 +211,21 @@ if ($is_admin && isset($_POST['submit_post'])) {
         localStorage.removeItem('draft_' + currentId);
     }
 
-    // UPDATED: Completely resets UI to "New Post" mode
+    // UPDATED: Resets UI and makes Clear button visible again
     function confirmClear() {
-        if (confirm("Clear editor? This will also delete your local auto-save draft and reset to New Post mode.")) {
-            // 1. Clear Content
+        if (confirm("Clear editor? This will also delete your local auto-save draft.")) {
             textarea.value = "";
             clearAutoSave();
             
-            // 2. Reset Selector
             if (postSelector) postSelector.selectedIndex = 0;
-            
-            // 3. Reset ID to make it a "New" post
             if (postIdInput) postIdInput.value = "";
-            
-            // 4. FIX: Reset Heading
             if (editorTitle) editorTitle.innerText = "Create New Post";
             
-            // 5. FIX: Hide Delete Button/Cancel Link
+            // UI Toggle
             if (adminActions) adminActions.classList.add('hidden');
+            if (clearBtn) clearBtn.classList.remove('hidden'); // Show clear again
             
-            status.innerText = 'Editor reset to New Post mode.';
+            status.innerText = 'Editor reset.';
             setTimeout(() => { status.innerText = ''; }, 3000);
         }
     }
