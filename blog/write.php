@@ -114,6 +114,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
         .btn-ai { background: #28a745; color: white; border: none; cursor: pointer; font-weight: bold; width: auto; padding: 10px 15px; border-radius: 4px; }
         .btn-save { background: #007bff; color: white; border: none; cursor: pointer; width: auto; padding: 10px 15px; border-radius: 4px; }
         .btn-del { background: #dc3545; color: white; border: none; cursor: pointer; width: auto; padding: 10px 15px; border-radius: 4px; margin-left: 10px; }
+        .btn-clear { background: #6c757d; color: white; border: none; cursor: pointer; width: auto; padding: 10px 15px; border-radius: 4px; margin-left: 10px; }
         .msg-banner { color: #004085; background-color: #cce5ff; border: 1px solid #b8daff; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
         #autosave-status { font-size: 0.8em; color: #888; float: right; }
     </style>
@@ -152,7 +153,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
                 <span id="autosave-status"></span>
                 <h3><?php echo $current_id ? "Editing Post #" . htmlspecialchars($current_id) : "Create New Post"; ?></h3>
                 
-                <button type="button" class="btn-ai" id="ai-copy-btn">✨ Copy for AI</button><br><br>
+                <button type="button" class="btn-ai" id="ai-copy-btn">✨ Copy for AI</button>
                 <span id="copy-status" style="margin-left:10px; font-size: 0.9em; color: green; display: none;">Copied!</span>
 
                 <input type="hidden" name="post_id" id="post_id" value="<?php echo htmlspecialchars($current_id); ?>">
@@ -161,6 +162,8 @@ if ($is_admin && isset($_POST['submit_post'])) {
                 <div style="margin-top: 10px;">
                     <input type="submit" name="submit_post" class="btn-save" value="Publish Changes" onclick="clearAutoSave()">
                     
+                    <button type="button" class="btn-clear" onclick="confirmClear()">Clear Editor</button>
+
                     <?php if ($current_id): ?> 
                         <input type="submit" name="delete_post" value="Delete Post" class="btn-del" onclick="return confirm('Permanently delete this post?');">
                         | <a href="write.php" onclick="clearAutoSave()">Cancel/New Post</a> 
@@ -179,7 +182,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
     const status = document.getElementById('autosave-status');
     const postId = document.getElementById('post_id')?.value || 'new';
 
-    // 1. Load Auto-Saved Draft on page load
+    // 1. Load Auto-Saved Draft
     window.addEventListener('load', () => {
         const savedData = localStorage.getItem('draft_' + postId);
         if (savedData && !textarea.value) {
@@ -188,7 +191,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
         }
     });
 
-    // 2. Auto-Save Logic (saves every time you stop typing)
+    // 2. Auto-Save Logic
     textarea?.addEventListener('input', () => {
         localStorage.setItem('draft_' + postId, textarea.value);
         status.innerText = 'Draft saved locally...';
@@ -198,6 +201,16 @@ if ($is_admin && isset($_POST['submit_post'])) {
     // 3. Clear Auto-Save on Publish/Cancel
     function clearAutoSave() {
         localStorage.removeItem('draft_' + postId);
+    }
+
+    // NEW: Clear Editor with Confirmation
+    function confirmClear() {
+        if (confirm("Are you sure you want to clear the editor? This will also delete your local auto-save draft.")) {
+            textarea.value = "";
+            clearAutoSave();
+            status.innerText = 'Editor and local draft cleared.';
+            setTimeout(() => { status.innerText = ''; }, 3000);
+        }
     }
 
     // 4. AI Copy Tool
