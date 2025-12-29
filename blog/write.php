@@ -193,7 +193,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
         const savedData = localStorage.getItem('draft_' + currentId);
         if (savedData && !textarea.value) {
             textarea.value = savedData;
-            status.innerText = 'Restored draft from local storage';
+            status.innerText = '<br><br>Restored draft from local storage';
         }
     });
 
