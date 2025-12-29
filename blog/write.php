@@ -117,6 +117,8 @@ if ($is_admin && isset($_POST['submit_post'])) {
         .btn-clear { background: #6c757d; color: white; border: none; cursor: pointer; width: auto; padding: 10px 15px; border-radius: 4px; margin-left: 10px; }
         .msg-banner { color: #004085; background-color: #cce5ff; border: 1px solid #b8daff; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
         #autosave-status { font-size: 0.8em; color: #888; float: right; }
+        /* Helper to hide things via JS */
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
@@ -151,7 +153,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
                 <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
 
                 <span id="autosave-status"></span>
-                <h3><?php echo $current_id ? "Editing Post #" . htmlspecialchars($current_id) : "Create New Post"; ?></h3>
+                <h3 id="editor-title"><?php echo $current_id ? "Editing Post #" . htmlspecialchars($current_id) : "Create New Post"; ?></h3>
                 
                 <button type="button" class="btn-ai" id="ai-copy-btn">✨ Copy for AI</button>
                 <span id="copy-status" style="margin-left:10px; font-size: 0.9em; color: green; display: none;">Copied!</span>
@@ -164,10 +166,10 @@ if ($is_admin && isset($_POST['submit_post'])) {
                     
                     <button type="button" class="btn-clear" onclick="confirmClear()">Clear Editor</button>
 
-                    <?php if ($current_id): ?> 
+                    <span id="admin-actions" class="<?php echo $current_id ? '' : 'hidden'; ?>">
                         <input type="submit" name="delete_post" value="Delete Post" class="btn-del" onclick="return confirm('Permanently delete this post?');">
-                        | <a href="write.php" onclick="clearAutoSave()">Cancel/New Post</a> 
-                    <?php endif; ?>
+                        | <a href="write.php" onclick="clearAutoSave()">Cancel Edit</a> 
+                    </span>
                 </div>
 
                 <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
@@ -182,6 +184,8 @@ if ($is_admin && isset($_POST['submit_post'])) {
     const status = document.getElementById('autosave-status');
     const postIdInput = document.getElementById('post_id');
     const postSelector = document.getElementById('post_selector');
+    const editorTitle = document.getElementById('editor-title');
+    const adminActions = document.getElementById('admin-actions');
 
     // 1. Load Auto-Saved Draft
     window.addEventListener('load', () => {
@@ -207,19 +211,26 @@ if ($is_admin && isset($_POST['submit_post'])) {
         localStorage.removeItem('draft_' + currentId);
     }
 
-    // UPDATED: Clear Editor, Local Storage, and Reset Select Menu
+    // UPDATED: Completely resets UI to "New Post" mode
     function confirmClear() {
-        if (confirm("Clear editor? This will also delete your local auto-save draft and reset the selection.")) {
+        if (confirm("Clear editor? This will also delete your local auto-save draft and reset to New Post mode.")) {
+            // 1. Clear Content
             textarea.value = "";
             clearAutoSave();
             
-            // Reset the Dropdown to the first option (index 0)
+            // 2. Reset Selector
             if (postSelector) postSelector.selectedIndex = 0;
             
-            // Optional: Reset the hidden Post ID if you want to switch to "New Post" mode immediately
+            // 3. Reset ID to make it a "New" post
             if (postIdInput) postIdInput.value = "";
             
-            status.innerText = 'Editor cleared and selection reset.';
+            // 4. FIX: Reset Heading
+            if (editorTitle) editorTitle.innerText = "Create New Post";
+            
+            // 5. FIX: Hide Delete Button/Cancel Link
+            if (adminActions) adminActions.classList.add('hidden');
+            
+            status.innerText = 'Editor reset to New Post mode.';
             setTimeout(() => { status.innerText = ''; }, 3000);
         }
     }
