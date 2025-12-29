@@ -66,7 +66,7 @@ if (isset($_POST['submit_post'])) {
 
 <fieldset style="margin-bottom: 20px; padding: 15px;">
     <legend>Load Recent Entry</legend>
-    <form method="post" action="write.php">
+    <form method="post" action="w.php">
         <label for="post_to_load">Select a recent post:</label>
         <select name="post_to_load" id="post_to_load">
             <?php foreach ($recent_posts as $post): ?>
