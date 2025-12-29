@@ -140,9 +140,58 @@ if ($is_admin && isset($_POST['submit_post'])) {
                 <?php if ($current_id): ?> 
                     | <a href="write.php">Cancel Edit</a> 
                 <?php endif; ?>
+				
+				
+				
+				
+				<button type="button" id="ai-btn" style="margin-bottom: 10px; padding: 8px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px;">
+    ✨ Improve with AI
+</button>
+<span id="ai-loading" style="display:none; margin-left:10px; font-style: italic;">AI is working...</span>
+
+
+
             </fieldset>
         </form>
     <?php endif; ?>
+	
+	
+	<script>
+document.getElementById('ai-btn').addEventListener('click', function() {
+    const contentArea = document.querySelector('textarea[name="blog_content"]');
+    const loadingText = document.getElementById('ai-loading');
+    
+    if (!contentArea.value.trim()) {
+        alert("Please enter some text first!");
+        return;
+    }
+
+    loadingText.style.display = 'inline';
+    this.disabled = true;
+
+    fetch('ai_proxy.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: contentArea.value })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.candidates && data.candidates[0].content.parts[0].text) {
+            contentArea.value = data.candidates[0].content.parts[0].text.trim();
+        } else {
+            alert("AI Error: " + (data.error || "Unknown response"));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Could not connect to AI proxy.");
+    })
+    .finally(() => {
+        loadingText.style.display = 'none';
+        this.disabled = false;
+    });
+});
+</script>
 
 </body>
 </html>
