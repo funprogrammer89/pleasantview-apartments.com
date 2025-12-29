@@ -152,7 +152,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
                 <?php endif; ?>
 				<br>
 				<hr style="margin: 20px 0;">
-				<br>
+
 				Markdown Cheatsheet<br><br>
 				![image text](URL)
             </fieldset>
