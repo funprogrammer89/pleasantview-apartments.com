@@ -156,15 +156,22 @@ $colors = [
         ?>
         <div class="post" style="background-color: <?php echo $bg_color; ?>;">
             
-            <div class="date">
+<div class="date">
     <?php 
         $date = new DateTime($post['post_date']);
         // Keeping your 3-hour correction
         $date->modify('+3 hours'); 
-        // Set the timezone to New York so PHP knows if it's currently EST or EDT
+        // Set the timezone to New York
         $date->setTimezone(new DateTimeZone('America/New_York'));
-        // 'T' will now show "EST" because it is December
-        echo $date->format('F j, Y \a\t g:i A T'); 
+
+        // Get the hour in 24-hour format (00 to 23)
+        $hour = (int)$date->format('H');
+
+        // Logic: If hour is NOT between 0 and 4 (inclusive), show the date
+        // This effectively hides the time from 12:00:00 AM to 4:59:59 AM
+        if ($hour < 0 || $hour >= 5) {
+            echo $date->format('F j, Y \a\t g:i A T'); 
+        }
     ?>
 </div>    
             <div class="content">
