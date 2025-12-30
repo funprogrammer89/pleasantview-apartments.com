@@ -164,16 +164,18 @@ $colors = [
         // Set the timezone to New York
         $date->setTimezone(new DateTimeZone('America/New_York'));
 
-        // Get the hour in 24-hour format (00 to 23)
+        // Get the hour in 24-hour format (0 to 23)
         $hour = (int)$date->format('H');
 
-        // Logic: If hour is NOT between 0 and 4 (inclusive), show the date
-        // This effectively hides the time from 12:00:00 AM to 4:59:59 AM
+        // 1. Always show the Date
+        echo $date->format('F j, Y'); 
+
+        // 2. Only show the Time if it is NOT between 12:00 AM and 5:00 AM
         if ($hour < 0 || $hour >= 5) {
-            echo $date->format('F j, Y \a\t g:i A T'); 
+            echo $date->format(' \a\t g:i A T'); 
         }
     ?>
-</div>    
+</div>   
             <div class="content">
                 <?php 
                     $raw_markdown = $post['content'];
