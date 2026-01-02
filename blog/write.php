@@ -96,7 +96,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
         }
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
-        header("Location: write.php?msg=Saved+Successfully");
+        header("Location: write.php?msg=Saved+Successfully&saved_id=" . ($pid ?: $pdo->lastInsertId()));
         exit;
     }
 }
@@ -115,7 +115,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
         .btn-save { background: #007bff; color: white; border: none; cursor: pointer; width: auto; padding: 10px 15px; border-radius: 4px; }
         .btn-del { background: #dc3545; color: white; border: none; cursor: pointer; width: auto; padding: 10px 15px; border-radius: 4px; margin-left: 10px; }
         .btn-clear { background: #6c757d; color: white; border: none; cursor: pointer; width: auto; padding: 10px 15px; border-radius: 4px; }
-        .msg-banner { color: #004085; background-color: #cce5ff; border: 1px solid #b8daff; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
+        .msg-banner { color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
         #autosave-status { font-size: 0.8em; color: #888; float: right; }
         .hidden { display: none !important; }
     </style>
@@ -129,6 +129,7 @@ if ($is_admin && isset($_POST['submit_post'])) {
     <?php if (!$is_admin): ?>
         <div style="text-align: center; margin-top: 50px;">
             <h2>Admin Login</h2>
+            <p>Your session may have expired. Please log in to continue.</p>
             <form method="post">
                 <input type="password" name="login_passcode" placeholder="Enter Passcode" required style="max-width:300px;"><br>
                 <input type="submit" value="Login" style="width: auto; padding: 10px 25px;">
@@ -161,13 +162,13 @@ if ($is_admin && isset($_POST['submit_post'])) {
                 <textarea name="blog_content" id="blog_content" rows="15" placeholder="Start writing..."><?php echo htmlspecialchars($draft_content); ?></textarea>
                 
                 <div style="margin-top: 10px;">
-                    <input type="submit" name="submit_post" class="btn-save" value="Publish Changes" onclick="clearAutoSave()">
+                    <input type="submit" name="submit_post" class="btn-save" value="Publish Changes">
                     
                     <button type="button" id="clear-btn" class="btn-clear <?php echo $current_id ? 'hidden' : ''; ?>" onclick="confirmClear()">Clear Editor</button>
 
                     <span id="admin-actions" class="<?php echo $current_id ? '' : 'hidden'; ?>">
                         <input type="submit" name="delete_post" value="Delete Post" class="btn-del" onclick="return confirm('Permanently delete this post?');">
-                        | <a href="write.php" onclick="clearAutoSave()">Cancel Edit</a> 
+                        | <a href="write.php">Cancel Edit</a> 
                     </span>
                 </div>
 
@@ -187,46 +188,48 @@ if ($is_admin && isset($_POST['submit_post'])) {
     const adminActions = document.getElementById('admin-actions');
     const clearBtn = document.getElementById('clear-btn');
 
-    // 1. Load Auto-Saved Draft
+    // 1. Load Auto-Saved Draft (Critical Fix)
     window.addEventListener('load', () => {
         const currentId = postIdInput?.value || 'new';
         const savedData = localStorage.getItem('draft_' + currentId);
-        if (savedData && !textarea.value) {
+        
+        // If the server didn't provide content (because of session loss) 
+        // but we have it in LocalStorage, restore it.
+        if (savedData && (!textarea.value || textarea.value.trim() === "")) {
             textarea.value = savedData;
-            status.innerText = 'Restored draft from local storage';
+            status.innerText = 'Restored unsaved draft from browser storage.';
+            setTimeout(() => { status.innerText = ''; }, 4000);
+        }
+
+        // 2. Clear Storage ONLY if we just had a successful save
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('msg') === 'Saved Successfully') {
+            const savedId = urlParams.get('saved_id') || 'new';
+            localStorage.removeItem('draft_' + savedId);
+            localStorage.removeItem('draft_new'); // Clean up any stray "new" drafts
+            status.innerText = 'Save confirmed. Local cache cleared.';
         }
     });
 
-    // 2. Auto-Save Logic
+    // 3. Auto-Save Logic
     textarea?.addEventListener('input', () => {
         const currentId = postIdInput?.value || 'new';
         localStorage.setItem('draft_' + currentId, textarea.value);
         status.innerText = 'Draft saved locally...';
-        setTimeout(() => { status.innerText = ''; }, 2000);
+        setTimeout(() => { if(status.innerText === 'Draft saved locally...') status.innerText = ''; }, 2000);
     });
 
-    // 3. Clear Auto-Save helper
-    function clearAutoSave() {
-        const currentId = postIdInput?.value || 'new';
-        localStorage.removeItem('draft_' + currentId);
-    }
-
-    // UPDATED: Resets UI and makes Clear button visible again
     function confirmClear() {
         if (confirm("Clear editor? This will also delete your local auto-save draft.")) {
+            const currentId = postIdInput?.value || 'new';
+            localStorage.removeItem('draft_' + currentId);
             textarea.value = "";
-            clearAutoSave();
-            
             if (postSelector) postSelector.selectedIndex = 0;
             if (postIdInput) postIdInput.value = "";
             if (editorTitle) editorTitle.innerText = "Create New Post";
-            
-            // UI Toggle
             if (adminActions) adminActions.classList.add('hidden');
-            if (clearBtn) clearBtn.classList.remove('hidden'); // Show clear again
-            
+            if (clearBtn) clearBtn.classList.remove('hidden');
             status.innerText = 'Editor reset.';
-            setTimeout(() => { status.innerText = ''; }, 3000);
         }
     }
 
