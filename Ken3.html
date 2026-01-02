@@ -1,23 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script src="https://kit.fontawesome.com/your-unique-id.js" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kenneth Paul Elliott - Professional Resume</title>
+    <title>Kenneth Paul Elliott - Resume</title>
+    <script src="https://kit.fontawesome.com/your-unique-id.js" crossorigin="anonymous"></script>
     <style>
-	
-	.social-icon {
-    color: white;
-    fill: white; /* For SVGs */
-    transition: opacity 0.2s;
-    vertical-align: middle;
-    margin: 0 10px;
-}
-
-.social-icon:hover {
-    opacity: 0.8;
-}
+        /* --- Root & General Styles --- */
         * {
             margin: 0;
             padding: 0;
@@ -41,7 +30,8 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             overflow: hidden;
         }
-        
+
+        /* --- Header Section --- */
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -50,11 +40,10 @@
         }
         
         .headshot-container {
-            width: 200px;
-            height: 200px;
+            width: 180px;
+            height: 180px;
             margin: 0 auto 20px;
             overflow: hidden;
-            background: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -64,18 +53,29 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            image-rendering: auto;
-            image-rendering: smooth;
-            -ms-interpolation-mode: bicubic;
-            backface-visibility: hidden;
-            transform: translateZ(0);
-
+            border-radius: 50%;
         }
         
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
             font-weight: 600;
+        }
+
+        .blog-link {
+            display: inline-block;
+            margin-bottom: 15px;
+            color: white;
+            font-size: 1.2em;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.4);
+            padding: 5px 15px;
+            border-radius: 20px;
+            transition: background 0.3s;
+        }
+
+        .blog-link:hover {
+            background: rgba(255,255,255,0.1);
         }
         
         .contact-info {
@@ -92,7 +92,8 @@
         .contact-info a:hover {
             text-decoration: underline;
         }
-        
+
+        /* --- Content Layout --- */
         .content {
             padding: 40px;
         }
@@ -173,47 +174,121 @@
             border-radius: 8px;
             margin-top: 10px;
         }
-        
-        .presentations p {
-            margin-bottom: 5px;
+
+        .print-btn {
+            display: block;
+            width: fit-content;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
         }
-        
-        @media (max-width: 768px) {
+
+        /* --- ATS & PRINT OPTIMIZATION --- */
+        @media print {
+            @page {
+                margin: 0.5cm;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+            }
+            .container {
+                box-shadow: none !important;
+                max-width: 100% !important;
+                border-radius: 0 !important;
+            }
+            .header {
+                background: white !important;
+                color: black !important;
+                padding: 10px 0 !important;
+                border-bottom: 2px solid #333 !important;
+                height: auto !important;
+            }
             .header h1 {
-                font-size: 2em;
+                color: black !important;
+                font-size: 2.2em !important;
+                margin-bottom: 5px !important;
             }
-            
-            .content {
-                padding: 30px 25px;
+            .blog-link {
+                color: black !important;
+                border: none !important;
+                text-decoration: none !important;
+                margin-bottom: 5px !important;
+                padding: 0 !important;
+                font-size: 1.1em !important;
             }
-            
             .contact-info {
-                font-size: 1em;
+                margin-top: 5px !important;
             }
-            
             .contact-info a {
-                display: block;
-                margin: 5px 0;
+                color: black !important;
+                text-decoration: none !important;
             }
+            .headshot-container, .print-btn, .social-icon {
+                display: none !important;
+                height: 0 !important;
+                margin: 0 !important;
+            }
+            .section h2 {
+                color: #333 !important;
+                border-bottom: 2px solid #333 !important;
+            }
+
+            /* Comma-Separated Skills Trick for ATS */
+            .skills-grid {
+                display: block !important;
+                margin-top: 10px !important;
+            }
+            .skill-tag {
+                display: inline !important;
+                background: transparent !important;
+                border: none !important;
+                padding: 0 !important;
+                font-size: 1em !important;
+            }
+            .skill-tag:not(:last-child):after {
+                content: ", ";
+            }
+
+            /* Show URLs for external links, hide for mailto/tel */
+            a[href^="http"]:after {
+                content: " (" attr(href) ")";
+                font-size: 0.8em;
+                color: #666;
+            }
+            a[href^="mailto"]:after, 
+            a[href^="tel"]:after {
+                content: "";
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2em; }
+            .content { padding: 30px 25px; }
+            .contact-info a { display: block; margin: 10px 0; }
         }
     </style>
 </head>
 <body>
+
+    <button class="print-btn" onclick="window.print()">Download ATS-Friendly PDF</button>
+
     <div class="container">
         <div class="header">
             <div class="headshot-container">
-               
-              
                 <img src="pics/Ken.png" alt="Kenneth Paul Elliott">
             </div>
             <h1>Kenneth Paul Elliott</h1>
-			<a href="blog/view.php"><font size="5">Blogs</a></font>
-</a>
-</a>
-</a>
+            <a href="https://pleasantview-apartments.com/blog/view.php" class="blog-link">Blog</a>
+            
             <div class="contact-info">
                 <a href="mailto:Ken@PleasantView-Apartments.com">Ken@PleasantView-Apartments.com</a>
-                
                 <a href="tel:614-597-5642">614-597-5642</a>
             </div>
         </div>
@@ -248,13 +323,12 @@
                     <div class="skill-tag">Tableau</div>
                     <div class="skill-tag">Excel</div>
                     <div class="skill-tag">Office 365 Administration</div>
-					<div class="skill-tag">Generative AI Integration & Workflow Automation</div>
+                    <div class="skill-tag">Generative AI Integration & Workflow Automation</div>
                 </div>
-					<div class="presentations">
+                <div class="presentations">
                     <p><strong>Public Presentations at Ohio Linux Fest Conference (OLF):</strong></p>
-                    <p><a href="https://www.youtube.com/watch?v=Mv8mZNfALLs">2018: History of Linux</p></a>
-                    <p><a href="https://www.youtube.com/watch?v=S9lQjTAkeiw">2023: History of Computing</p></a>
-
+                    <p><a href="https://www.youtube.com/watch?v=Mv8mZNfALLs">2018: History of Linux</a></p>
+                    <p><a href="https://www.youtube.com/watch?v=S9lQjTAkeiw">2023: History of Computing</a></p>
                 </div>
             </div>
             
@@ -266,11 +340,11 @@
                     <p class="job-title">Real Estate Manager</p>
                     <p class="date-range">2016 – Present</p>
                     <ul class="highlights">
-                        <li>Designed, developed, and manage www.PleasantView-Apartments.com, overseeing all website content and hosting operations, resulting in increased tenant inquiries and occupancy</li>
-                        <li>Oversee financial management using QuickBooks, including vendor payments, bank reconciliations, and preparation of profit and loss statements to ensure accurate reporting and fiscal responsibility</li>
-                        <li>Supervise maintenance operations and coordinate with general contractors to complete tenant work orders promptly and prepare units for new occupancy, reducing vacancy turnaround time</li>
-                        <li>Collaborate with landscaping teams to enhance and maintain curb appeal, improving resident satisfaction and community appearance</li>
-                        <li>Procure materials and equipment to support property rehabilitation projects, contributing to long-term asset value and improved property conditions</li>
+                        <li>Designed, developed, and manage pleasantview-apartments.com, overseeing website content and hosting operations, resulting in increased tenant inquiries.</li>
+                        <li>Oversee financial management using QuickBooks, including vendor payments, bank reconciliations, and P&L statement preparation.</li>
+                        <li>Supervise maintenance operations and coordinate with contractors to reduce vacancy turnaround time.</li>
+                        <li>Collaborate with landscaping teams to enhance community appearance and resident satisfaction.</li>
+                        <li>Procure materials for property rehabilitation projects, contributing to long-term asset value.</li>
                     </ul>
                 </div>
                 
@@ -278,10 +352,10 @@
                     <h3>IT Specialist [System Administration]</h3>
                     <p class="date-range">2012 – 2016</p>
                     <ul class="highlights">
-                        <li>Supported business clients with comprehensive IT solutions, including device procurement, network setup, troubleshooting, and system maintenance to ensure optimal performance</li>
-                        <li>Utilized ticketing systems to log, track, and resolve incidents efficiently while maintaining accurate project documentation</li>
-                        <li>Maintained and updated internal knowledge bases, enabling faster issue resolution and improved team efficiency</li>
-                        <li>Administered and managed Active Directory accounts, permissions, and policies, as well as virtual machine environments to support business operations</li>
+                        <li>Supported business clients with IT solutions, including device procurement, network setup, and system maintenance.</li>
+                        <li>Utilized ticketing systems to log, track, and resolve incidents efficiently while maintaining documentation.</li>
+                        <li>Maintained internal knowledge bases to improve team issue resolution efficiency.</li>
+                        <li>Administered Active Directory accounts, permissions, and policies, as well as virtual machine environments.</li>
                     </ul>
                 </div>
             </div>
