@@ -186,16 +186,19 @@
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
+            text-decoration: none;
         }
 
         /* --- ATS & PRINT OPTIMIZATION --- */
         @media print {
+            /* Force the removal of browser headers/footers */
             @page {
-                margin: 0.5cm;
+                margin: 0; 
             }
             body {
                 background: white !important;
                 color: black !important;
+                margin: 1.5cm !important; /* Re-adds professional margin to content only */
                 padding: 0 !important;
             }
             .container {
@@ -206,7 +209,7 @@
             .header {
                 background: white !important;
                 color: black !important;
-                padding: 10px 0 !important;
+                padding: 0 0 10px 0 !important;
                 border-bottom: 2px solid #333 !important;
                 height: auto !important;
             }
@@ -230,17 +233,19 @@
                 color: black !important;
                 text-decoration: none !important;
             }
+            /* Eliminate ghost space from hidden elements */
             .headshot-container, .print-btn, .social-icon {
                 display: none !important;
                 height: 0 !important;
                 margin: 0 !important;
+                padding: 0 !important;
             }
             .section h2 {
                 color: #333 !important;
                 border-bottom: 2px solid #333 !important;
             }
 
-            /* Comma-Separated Skills Trick for ATS */
+            /* Comma-Separated Skills for ATS */
             .skills-grid {
                 display: block !important;
                 margin-top: 10px !important;
@@ -256,7 +261,7 @@
                 content: ", ";
             }
 
-            /* Show URLs for external links, hide for mailto/tel */
+            /* Show web URLs, hide mailto/tel prefixes */
             a[href^="http"]:after {
                 content: " (" attr(href) ")";
                 font-size: 0.8em;
@@ -277,7 +282,7 @@
 </head>
 <body>
 
-    <button class="print-btn" onclick="window.print()">Download ATS-Friendly PDF</button>
+    <button class="print-btn" onclick="window.print()">Download PDF</button>
 
     <div class="container">
         <div class="header">
@@ -334,7 +339,6 @@
             
             <div class="section">
                 <h2>Professional Experience</h2>
-                
                 <div class="experience-item">
                     <h3>Pleasant View Apartments</h3>
                     <p class="job-title">Real Estate Manager</p>
