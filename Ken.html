@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kenneth-Paul-Elliott--MBA-Resume</title>
-    <script src="https://kit.fontawesome.com/your-unique-id.js" crossorigin="anonymous"></script>
     <style>
         /* --- Root & General Styles --- */
         * {
@@ -13,17 +12,19 @@
             box-sizing: border-box;
         }
         
+        /* Standard Web View Body */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
+            line-height: 1.5;
             color: #333;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 40px 20px;
+            -webkit-text-size-adjust: 100%; /* Standardizes mobile zoom */
         }
         
         .container {
-            max-width: 900px;
+            max-width: 850px;
             margin: 0 auto;
             background: white;
             border-radius: 12px;
@@ -35,14 +36,14 @@
         .header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 50px 40px;
+            padding: 40px;
             text-align: center;
         }
         
         .headshot-container {
-            width: 180px;
-            height: 180px;
-            margin: 0 auto 20px;
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 15px;
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -57,30 +58,26 @@
         }
         
         .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 2.2em;
+            margin-bottom: 5px;
             font-weight: 600;
         }
 
         .blog-link {
             display: inline-block;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             color: white;
-            font-size: 1.2em;
+            font-size: 1.1em;
             text-decoration: none;
             border: 1px solid rgba(255,255,255,0.4);
             padding: 5px 15px;
             border-radius: 20px;
             transition: background 0.3s;
         }
-
-        .blog-link:hover {
-            background: rgba(255,255,255,0.1);
-        }
         
         .contact-info {
-            font-size: 1.1em;
-            margin-top: 15px;
+            font-size: 1em;
+            margin-top: 10px;
         }
         
         .contact-info a {
@@ -88,48 +85,38 @@
             text-decoration: none;
             margin: 0 10px;
         }
-        
-        .contact-info a:hover {
-            text-decoration: underline;
-        }
 
         /* --- Content Layout --- */
         .content {
-            padding: 40px;
+            padding: 30px 40px;
         }
         
         .section {
-            margin-bottom: 35px;
+            margin-bottom: 30px;
         }
         
         .section h2 {
             color: #667eea;
-            font-size: 1.8em;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            font-size: 1.6em;
+            margin-bottom: 12px;
+            padding-bottom: 5px;
             border-bottom: 3px solid #667eea;
         }
         
         .education-item, .experience-item {
-            margin-bottom: 25px;
-        }
-        
-        .education-item h3, .experience-item h3 {
-            color: #333;
-            font-size: 1.2em;
-            margin-bottom: 5px;
+            margin-bottom: 20px;
         }
         
         .job-title {
             font-weight: 600;
-            color: #555;
-            margin-bottom: 8px;
+            color: #444;
         }
         
         .date-range {
             color: #666;
             font-style: italic;
-            margin-bottom: 10px;
+            font-size: 0.95em;
+            margin-bottom: 5px;
         }
         
         .highlights {
@@ -138,8 +125,8 @@
         }
         
         .highlights li {
-            padding-left: 25px;
-            margin-bottom: 8px;
+            padding-left: 20px;
+            margin-bottom: 5px;
             position: relative;
         }
         
@@ -149,134 +136,122 @@
             left: 0;
             color: #667eea;
             font-weight: bold;
-            font-size: 1.2em;
         }
         
+        /* Skills Grid Fix */
         .skills-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 8px;
+            margin-top: 10px;
         }
         
         .skill-tag {
-            background: #f0f0f0;
-            padding: 8px 12px;
-            border-radius: 6px;
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
             text-align: center;
-            font-size: 0.95em;
-            border-left: 3px solid #667eea;
-        }
-        
-        .presentations {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 10px;
+            font-size: 0.9em;
+            border-left: 4px solid #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100%; 
         }
 
         .print-btn {
             display: block;
             width: fit-content;
             margin: 20px auto;
-            padding: 10px 20px;
+            padding: 10px 25px;
             background: #333;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
-            text-decoration: none;
         }
 
-        /* --- ATS & PRINT OPTIMIZATION --- */
+        /* --- CROSS-PLATFORM PRINT OPTIMIZATION --- */
+        @page {
+            size: letter;
+            margin: 0; /* Removing page margin to kill browser headers/footers */
+        }
+
         @media print {
-            /* Force the removal of browser headers/footers */
-            @page {
-                margin: 0; 
+            html {
+                -webkit-text-size-adjust: none; /* FORCES iOS to stop resizing fonts */
             }
             body {
                 background: white !important;
                 color: black !important;
-                margin: 1.5cm !important; /* Re-adds professional margin to content only */
+                margin: 0.6in !important; /* Professional content margin */
                 padding: 0 !important;
+                width: auto !important;
             }
             .container {
                 box-shadow: none !important;
+                width: 100% !important;
                 max-width: 100% !important;
-                border-radius: 0 !important;
+                border: none !important;
             }
             .header {
                 background: white !important;
                 color: black !important;
-                padding: 0 0 10px 0 !important;
+                padding: 0 0 15px 0 !important;
                 border-bottom: 2px solid #333 !important;
-                height: auto !important;
             }
             .header h1 {
                 color: black !important;
-                font-size: 2.2em !important;
-                margin-bottom: 5px !important;
+                font-size: 24pt !important;
             }
             .blog-link {
                 color: black !important;
                 border: none !important;
-                text-decoration: none !important;
-                margin-bottom: 5px !important;
+                font-size: 11pt !important;
                 padding: 0 !important;
-                font-size: 1.1em !important;
-            }
-            .contact-info {
-                margin-top: 5px !important;
             }
             .contact-info a {
                 color: black !important;
-                text-decoration: none !important;
             }
-            /* Eliminate ghost space from hidden elements */
-            .headshot-container, .print-btn, .social-icon {
+            .headshot-container, .print-btn {
                 display: none !important;
+                visibility: hidden !important;
                 height: 0 !important;
                 margin: 0 !important;
-                padding: 0 !important;
             }
             .section h2 {
-                color: #333 !important;
-                border-bottom: 2px solid #333 !important;
+                color: black !important;
+                border-bottom: 1.5pt solid #333 !important;
+                font-size: 16pt !important;
+            }
+            
+            /* Prevent iOS from splitting a job or degree across pages */
+            .experience-item, .education-item, .section {
+                page-break-inside: avoid;
+                break-inside: avoid;
             }
 
-            /* Comma-Separated Skills for ATS */
             .skills-grid {
                 display: block !important;
-                margin-top: 10px !important;
             }
             .skill-tag {
                 display: inline !important;
                 background: transparent !important;
                 border: none !important;
                 padding: 0 !important;
-                font-size: 1em !important;
+                font-size: 11pt !important;
             }
             .skill-tag:not(:last-child):after {
                 content: ", ";
             }
-
-            /* Show web URLs, hide mailto/tel prefixes */
+            
+            /* Show URLs on paper */
             a[href^="http"]:after {
                 content: " (" attr(href) ")";
-                font-size: 0.8em;
-                color: #666;
+                font-size: 9pt;
+                color: #444;
             }
-            a[href^="mailto"]:after, 
-            a[href^="tel"]:after {
-                content: "";
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header h1 { font-size: 2em; }
-            .content { padding: 30px 25px; }
-            .contact-info a { display: block; margin: 10px 0; }
         }
     </style>
 </head>
@@ -290,7 +265,7 @@
                 <img src="pics/Ken.png" alt="Kenneth Paul Elliott">
             </div>
             <h1>Kenneth Paul Elliott, MBA</h1>
-            <a href="https://pleasantview-apartments.com/blog/view.php" class="blog-link">Blog</a>
+            <a href="https://pleasantview-apartments.com/blog/view.php" class="blog-link">Portfolio & Blog</a>
             
             <div class="contact-info">
                 <a href="mailto:Ken@PleasantView-Apartments.com">Ken@PleasantView-Apartments.com</a>
@@ -329,11 +304,6 @@
                     <div class="skill-tag">Excel</div>
                     <div class="skill-tag">Office 365 Administration</div>
                     <div class="skill-tag">Generative AI Integration & Workflow Automation</div>
-                </div>
-                <div class="presentations">
-                    <p><strong>Public Presentations at Ohio Linux Fest Conference (OLF):</strong></p>
-                    <p><a href="https://www.youtube.com/watch?v=Mv8mZNfALLs">2018: History of Linux</a></p>
-                    <p><a href="https://www.youtube.com/watch?v=S9lQjTAkeiw">2023: History of Computing</a></p>
                 </div>
             </div>
             
