@@ -1,16 +1,16 @@
 <?php
 session_start();
 
-// 1. Error Reporting
+/* ---------------- ERROR REPORTING ---------------- */
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// 2. Database Connection
+/* ---------------- DATABASE ---------------- */
 if (!file_exists('db.php')) {
     die("Error: db.php is missing.");
 }
-require_once 'db.php'; 
+require_once 'db.php';
 
 try {
     $pdo = new PDO($dsn, $user, $pass, $options);
@@ -19,17 +19,17 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-// 3. Passcode Logic
+/* ---------------- PASSCODE ---------------- */
 if (!file_exists('p.txt')) {
     die("Error: passcode file is missing.");
 }
 $stored_hash = trim(file_get_contents('p.txt'));
 
-$draft_content = ""; 
-$current_id = ""; 
+$draft_content = "";
+$current_id = "";
 $message = "";
 
-// --- LOGIN LOGIC ---
+/* ---------------- LOGIN ---------------- */
 if (isset($_POST['login_passcode'])) {
     if (password_verify($_POST['login_passcode'], $stored_hash)) {
         $_SESSION['authenticated'] = true;
@@ -39,9 +39,8 @@ if (isset($_POST['login_passcode'])) {
     }
 }
 
-// --- LOGOUT LOGIC ---
+/* ---------------- LOGOUT ---------------- */
 if (isset($_GET['logout'])) {
-    $_SESSION = [];
     session_destroy();
     header("Location: write.php");
     exit;
@@ -49,54 +48,50 @@ if (isset($_GET['logout'])) {
 
 $is_admin = isset($_SESSION['authenticated']) && $_SESSION['authenticated'] === true;
 
-// 4. FETCH RECENT POSTS
+/* ---------------- FETCH POSTS ---------------- */
 $recent_posts = [];
 if ($is_admin) {
-    $stmt_list = $pdo->query("SELECT id, content FROM posts ORDER BY id DESC LIMIT 10");
-    $recent_posts = $stmt_list->fetchAll();
+    $recent_posts = $pdo->query(
+        "SELECT id, content FROM posts ORDER BY id DESC LIMIT 10"
+    )->fetchAll();
 }
 
-// 5. ACTION: DELETE
+/* ---------------- DELETE ---------------- */
 if ($is_admin && isset($_POST['delete_post'])) {
-    $id_to_delete = $_POST['post_id'] ?? null;
-    if (!empty($id_to_delete)) {
-        $stmt_del = $pdo->prepare("DELETE FROM posts WHERE id = ?");
-        $stmt_del->execute([$id_to_delete]);
+    $id = $_POST['post_id'] ?? '';
+    if ($id) {
+        $pdo->prepare("DELETE FROM posts WHERE id = ?")->execute([$id]);
         header("Location: write.php?msg=Post+Deleted");
         exit;
     }
 }
 
-// 6. ACTION: AUTO-LOAD
-if ($is_admin && isset($_POST['post_to_load']) && !isset($_POST['delete_post']) && !isset($_POST['submit_post'])) {
-    $selected_id = $_POST['post_to_load'];
-    if ($selected_id) {
-        $stmt_load = $pdo->prepare("SELECT id, content FROM posts WHERE id = ?");
-        $stmt_load->execute([$selected_id]);
-        $loaded_post = $stmt_load->fetch();
-        if ($loaded_post) {
-            $draft_content = $loaded_post['content'];
-            $current_id = $loaded_post['id'];
-        }
+/* ---------------- LOAD ---------------- */
+if ($is_admin && isset($_POST['post_to_load']) && !isset($_POST['submit_post'])) {
+    $id = $_POST['post_to_load'];
+    $stmt = $pdo->prepare("SELECT id, content FROM posts WHERE id = ?");
+    $stmt->execute([$id]);
+    if ($row = $stmt->fetch()) {
+        $current_id = $row['id'];
+        $draft_content = $row['content'];
     }
 }
 
-// 7. ACTION: SAVE/UPDATE
+/* ---------------- SAVE ---------------- */
 if ($is_admin && isset($_POST['submit_post'])) {
     $content = trim($_POST['blog_content'] ?? '');
     $pid = $_POST['post_id'] ?? '';
-    
-    if (!empty($content)) {
-        if (!empty($pid)) {
-            $sql = "UPDATE posts SET content = ? WHERE id = ?";
-            $params = [$content, $pid];
+
+    if ($content) {
+        if ($pid) {
+            $pdo->prepare("UPDATE posts SET content = ? WHERE id = ?")
+                ->execute([$content, $pid]);
         } else {
-            $sql = "INSERT INTO posts (content) VALUES (?)";
-            $params = [$content];
+            $pdo->prepare("INSERT INTO posts (content) VALUES (?)")
+                ->execute([$content]);
+            $pid = $pdo->lastInsertId();
         }
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute($params);
-        header("Location: write.php?msg=Saved+Successfully&saved_id=" . ($pid ?: $pdo->lastInsertId()));
+        header("Location: write.php?msg=Saved+Successfully&saved_id=$pid");
         exit;
     }
 }
@@ -104,146 +99,158 @@ if ($is_admin && isset($_POST['submit_post'])) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Blog Editor</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: 20px auto; padding: 10px; color: #333; }
-        fieldset { background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; position: relative; }
-        textarea, input, select { font-size: 16px; width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        .btn-ai { background: #28a745; color: white; border: none; cursor: pointer; font-weight: bold; width: auto; padding: 10px 15px; border-radius: 4px; }
-        .btn-save { background: #007bff; color: white; border: none; cursor: pointer; width: auto; padding: 10px 15px; border-radius: 4px; }
-        .btn-del { background: #dc3545; color: white; border: none; cursor: pointer; width: auto; padding: 10px 15px; border-radius: 4px; margin-left: 10px; }
-        .btn-clear { background: #6c757d; color: white; border: none; cursor: pointer; width: auto; padding: 10px 15px; border-radius: 4px; }
-        .msg-banner { color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; padding: 10px; border-radius: 4px; margin-bottom: 20px; }
-        #autosave-status { font-size: 0.8em; color: #888; float: right; }
-        .hidden { display: none !important; }
-    </style>
+<meta charset="UTF-8">
+<title>Blog Editor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+    font-family: sans-serif;
+    max-width: 800px;
+    margin: 20px auto;
+    color: #333;
+}
+fieldset {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+textarea, input, select {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.btn-save { background:#007bff;color:#fff;border:0;padding:10px 15px;border-radius:4px; }
+.btn-del  { background:#dc3545;color:#fff;border:0;padding:10px 15px;border-radius:4px; }
+.btn-ai   { background:#28a745;color:#fff;border:0;padding:10px 15px;border-radius:4px; }
+
+#autosave-status {
+    float: right;
+    font-size: 0.8em;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+#autosave-status.visible { opacity: 1; }
+
+.save-dot {
+    width: 8px;
+    height: 8px;
+    background: #28a745;
+    border-radius: 50%;
+}
+.msg-banner {
+    background:#d4edda;
+    padding:10px;
+    border-radius:4px;
+    margin-bottom:20px;
+}
+</style>
 </head>
+
 <body>
 
-    <?php if ($message || isset($_GET['msg'])): ?>
-        <div class="msg-banner"><?php echo htmlspecialchars($_GET['msg'] ?? $message); ?></div>
-    <?php endif; ?>
+<?php if ($message || isset($_GET['msg'])): ?>
+<div class="msg-banner"><?= htmlspecialchars($_GET['msg'] ?? $message) ?></div>
+<?php endif; ?>
 
-    <?php if (!$is_admin): ?>
-        <div style="text-align: center; margin-top: 50px;">
-            <h2>Admin Login</h2>
-            <p>Your session may have expired. Please log in to continue.</p>
-            <form method="post">
-                <input type="password" name="login_passcode" placeholder="Enter Passcode" required style="max-width:300px;"><br>
-                <input type="submit" value="Login" style="width: auto; padding: 10px 25px;">
-            </form>
-        </div>
-    <?php else: ?>
-        <p align="right"><a href="write.php?logout=1">Logout</a></p>
+<?php if (!$is_admin): ?>
+<h2>Admin Login</h2>
+<form method="post">
+    <input type="password" name="login_passcode" required>
+    <input type="submit" value="Login">
+</form>
 
-        <form method="post" id="editor-form">
-            <fieldset>
-                <legend><b>Post Management</b></legend>
-                <select name="post_to_load" id="post_selector" onchange="this.form.submit()" style="max-width: 400px;">
-                    <option value="">-- Select to Load a Post --</option>
-                    <?php foreach ($recent_posts as $post): ?>
-                        <option value="<?php echo $post['id']; ?>" <?php echo ($current_id == $post['id']) ? 'selected' : ''; ?>>
-                            ID #<?php echo $post['id']; ?>: <?php echo htmlspecialchars(substr(strip_tags($post['content']), 0, 50)); ?>...
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+<?php else: ?>
 
-                <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
+<p align="right"><a href="?logout=1">Logout</a></p>
 
-                <span id="autosave-status"></span>
-                <h3 id="editor-title"><?php echo $current_id ? "Editing Post #" . htmlspecialchars($current_id) : "Create New Post"; ?></h3>
-                
-                <button type="button" class="btn-ai" id="ai-copy-btn">✨ Copy for AI</button><br><br>
-                <span id="copy-status" style="margin-left:10px; font-size: 0.9em; color: green; display: none;">Copied!</span>
+<form method="post">
+<fieldset>
 
-                <input type="hidden" name="post_id" id="post_id" value="<?php echo htmlspecialchars($current_id); ?>">
-                <textarea name="blog_content" id="blog_content" rows="15" placeholder="Start writing..."><?php echo htmlspecialchars($draft_content); ?></textarea>
-                
-                <div style="margin-top: 10px;">
-                    <input type="submit" name="submit_post" class="btn-save" value="Publish Changes">
-                    
-                    <button type="button" id="clear-btn" class="btn-clear <?php echo $current_id ? 'hidden' : ''; ?>" onclick="confirmClear()">Clear Editor</button>
+<select name="post_to_load" onchange="this.form.submit()">
+<option value="">-- Load Post --</option>
+<?php foreach ($recent_posts as $p): ?>
+<option value="<?= $p['id'] ?>" <?= $current_id == $p['id'] ? 'selected' : '' ?>>
+ID #<?= $p['id'] ?>: <?= htmlspecialchars(substr(strip_tags($p['content']),0,50)) ?>…
+</option>
+<?php endforeach; ?>
+</select>
 
-                    <span id="admin-actions" class="<?php echo $current_id ? '' : 'hidden'; ?>">
-                        <input type="submit" name="delete_post" value="Delete Post" class="btn-del" onclick="return confirm('Permanently delete this post?');">
-                        | <a href="write.php">Cancel Edit</a> 
-                    </span>
-                </div>
+<span id="autosave-status"></span>
+<h3><?= $current_id ? "Editing Post #$current_id" : "New Post" ?></h3>
 
-                <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ddd;">
-                <b>Markdown Cheat sheet</b><br>
-                <code>![img text](URL)</code>
-            </fieldset>
-        </form>
-    <?php endif; ?>
+<button type="button" class="btn-ai" id="ai-copy-btn">✨ Copy for AI</button>
 
-    <script>
-    const textarea = document.getElementById('blog_content');
-    const status = document.getElementById('autosave-status');
-    const postIdInput = document.getElementById('post_id');
-    const postSelector = document.getElementById('post_selector');
-    const editorTitle = document.getElementById('editor-title');
-    const adminActions = document.getElementById('admin-actions');
-    const clearBtn = document.getElementById('clear-btn');
+<input type="hidden" name="post_id" id="post_id" value="<?= htmlspecialchars($current_id) ?>">
+<textarea id="blog_content" name="blog_content" rows="15"><?= htmlspecialchars($draft_content) ?></textarea>
 
-    // 1. Load Auto-Saved Draft (Critical Fix)
-    window.addEventListener('load', () => {
-        const currentId = postIdInput?.value || 'new';
-        const savedData = localStorage.getItem('draft_' + currentId);
-        
-        // If the server didn't provide content (because of session loss) 
-        // but we have it in LocalStorage, restore it.
-        if (savedData && (!textarea.value || textarea.value.trim() === "")) {
-            textarea.value = savedData;
-            status.innerText = 'Restored unsaved draft from browser storage.';
-            setTimeout(() => { status.innerText = ''; }, 4000);
-        }
+<input type="submit" name="submit_post" class="btn-save" value="Publish">
 
-        // 2. Clear Storage ONLY if we just had a successful save
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('msg') === 'Saved Successfully') {
-            const savedId = urlParams.get('saved_id') || 'new';
-            localStorage.removeItem('draft_' + savedId);
-            localStorage.removeItem('draft_new'); // Clean up any stray "new" drafts
-            status.innerText = 'Save confirmed. Local cache cleared.';
-        }
-    });
+<?php if ($current_id): ?>
+<input type="submit" name="delete_post" class="btn-del" value="Delete"
+       onclick="return confirm('Delete this post?');">
+<?php endif; ?>
 
-    // 3. Auto-Save Logic
-    textarea?.addEventListener('input', () => {
-        const currentId = postIdInput?.value || 'new';
-        localStorage.setItem('draft_' + currentId, textarea.value);
-        status.innerText = 'Draft saved locally...';
-        setTimeout(() => { if(status.innerText === 'Draft saved locally...') status.innerText = ''; }, 2000);
-    });
+</fieldset>
+</form>
+<?php endif; ?>
 
-    function confirmClear() {
-        if (confirm("Clear editor? This will also delete your local auto-save draft.")) {
-            const currentId = postIdInput?.value || 'new';
-            localStorage.removeItem('draft_' + currentId);
-            textarea.value = "";
-            if (postSelector) postSelector.selectedIndex = 0;
-            if (postIdInput) postIdInput.value = "";
-            if (editorTitle) editorTitle.innerText = "Create New Post";
-            if (adminActions) adminActions.classList.add('hidden');
-            if (clearBtn) clearBtn.classList.remove('hidden');
-            status.innerText = 'Editor reset.';
-        }
+<script>
+const textarea = document.getElementById('blog_content');
+const status = document.getElementById('autosave-status');
+const postId = document.getElementById('post_id');
+
+let autosaveTimer = null;
+let hideTimer = null;
+
+function showStatus(text) {
+    status.innerHTML = `<span class="save-dot"></span>${text}`;
+    status.classList.add('visible');
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(() => status.classList.remove('visible'), 2000);
+}
+
+// Restore draft
+window.addEventListener('load', () => {
+    const id = postId?.value || 'new';
+    const saved = localStorage.getItem('draft_' + id);
+    if (saved && (!textarea.value || textarea.value.trim() === '')) {
+        textarea.value = saved;
+        showStatus('Draft restored');
     }
 
-    // 4. AI Copy Tool
-    document.getElementById('ai-copy-btn')?.addEventListener('click', function() {
-        const content = textarea.value.trim();
-        if (!content) { alert("Please write something first!"); return; }
-        const fullPrompt = "Please rewrite the following blog post to improve the flow, grammar, and professional tone:\n\n" + content;
-        navigator.clipboard.writeText(fullPrompt).then(() => {
-            document.getElementById('copy-status').style.display = 'inline';
-            setTimeout(() => { document.getElementById('copy-status').style.display = 'none'; }, 2000);
-            window.open('https://gemini.google.com/', '_blank');
-        });
+    const p = new URLSearchParams(location.search);
+    if (p.get('msg') === 'Saved Successfully') {
+        localStorage.removeItem('draft_' + (p.get('saved_id') || 'new'));
+    }
+});
+
+// Autosave (debounced UI)
+textarea?.addEventListener('input', () => {
+    const id = postId?.value || 'new';
+    localStorage.setItem('draft_' + id, textarea.value);
+
+    clearTimeout(autosaveTimer);
+    autosaveTimer = setTimeout(() => {
+        showStatus('Draft saved');
+    }, 600);
+});
+
+// AI copy helper
+document.getElementById('ai-copy-btn')?.addEventListener('click', () => {
+    if (!textarea.value.trim()) return alert('Write something first.');
+    const text = "Please rewrite the following blog post to improve the flow and tone:\n\n" + textarea.value;
+    navigator.clipboard.writeText(text).then(() => {
+        window.open('https://gemini.google.com/', '_blank');
     });
-    </script>
+});
+</script>
+
 </body>
 </html>
